@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rock paper scissors</title>
+</head>
+<body>
+    <script>
+        
+const options = ['rock', 'paper', 'scissors']
+
+function computerPlay () {
+  let random = Math.floor(Math.random()*options.length)
+  let computerSelection = options[random]
+  return computerSelection
+}
+
+function playRound (playerSelection, computerSelection) {
+	playerSelection = playerSelection.toLowerCase()
+  console.log(playerSelection + ' vs ' + computerSelection)
+  if (playerSelection === computerSelection) {
+  return "It's a tie!"
+  } else if (playerSelection === 'rock' && computerSelection === "scissors" || playerSelection === 'paper' && computerSelection === "rock" || playerSelection === 'scissors' && computerSelection === "paper") {
+  return `You win! ${playerSelection} beats ${computerSelection}`
+  } else if (playerSelection === 'rock' && computerSelection === "paper" || playerSelection === 'paper' && computerSelection === "scissors" || playerSelection === 'scissors' && computerSelection === "rock") {
+  return `You lose! ${computerSelection} beats ${playerSelection}`
+  }
+  else {
+return 'There has been an error!'
+}
+}
+
+/* console.log(playRound(prompt('Please enter rock, paper, or scissors'), computerPlay())) */
+
+function game () {
+	let playerScore = 0
+    let computerScore = 0
+	for (i = 0; i <= 5; i++) {
+        let playerSelection = prompt('Please enter rock, paper, or scissors')
+        console.log(playerSelection)
+        let results = playRound(playerSelection, computerPlay())
+        console.log('the results are ' + results)
+        if (results.indexOf('win!') !== -1) {
+            playerScore++;
+        } else if (results.indexOf('lose!') !== -1) {
+            computerScore++;
+        }
+        console.log('You have won ' + playerScore + ' games.')
+    }
+    console.log("The results are in.")
+    if (playerScore > computerScore) {
+        console.log("You've won!") 
+    } else if (playerScore === computerScore) {
+        console.log("It's a tie!")
+    } else {
+        console.log ("You've lost!")
+    }
+}
+
+game()
+
+    </script>
+</body>
+</html>
