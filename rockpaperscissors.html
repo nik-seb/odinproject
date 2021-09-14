@@ -5,10 +5,93 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>rock paper scissors</title>
+    <style>
+        button {
+            margin:1em;
+        }
+    </style>
+
 </head>
 <body>
+
+    <h1>Rock, Paper, Scissors</h1>
+
+    <div id='btn-container'>
+        <button id ='rock'>Rock</button>
+        <button id ='paper'>Paper</button>
+        <button id ='scissors'>Scissors</button>
+    </div>
+
+    <div id = 'results-container'>
+    </div>
+
+    <div id='stats-container'>
+    </div>
+
     <script>
+
+const buttons = document.querySelectorAll('button')
+const statsContainer = document.querySelector('#stats-container')
+const resultsContainer = document.querySelector('#results-container')
+let tally = 0
+let playerScore = 0
+let computerScore = 0
+
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        let playResults = playRound(button.id, computerPlay())
+        let results = document.createElement('p');
+
+        results.innerText = playResults;
+        resultsContainer.appendChild(results)
+        let oldResults = resultsContainer.firstChild
+        //I assumed the appended child was first child but it isn't, and if I remove first child before appending I end up with 3 lines of text before it starts deleting
+        resultsContainer.removeChild(oldResults)
+
+        console.log(playResults)
         
+        if (playResults.indexOf('win!') !== -1) {
+            playerScore++;
+        } else if (playResults.indexOf('lose!') !== -1) {
+            computerScore++;
+        }
+        let currentScore = `Player: ${playerScore} | Computer: ${computerScore}`
+        // let stats = document.createElement('p')
+        statsContainer.innerText = currentScore;
+        // resultsContainer.appendChild(results)
+        // let oldResults = resultsContainer.firstChild
+        // resultsContainer.removeChild(oldResults)
+
+        function winningText (text) {
+            let finalScore = document.createElement('p')
+            finalScore.innerText = text
+            statsContainer.appendChild(finalScore)
+            let replay = document.createElement ('button')
+            replay.innerText = 'Would you like to replay?'
+            statsContainer.appendChild(replay)
+            replay.addEventListener('click', () => {
+                resultsContainer.innerHTML = ''
+                statsContainer.innerHTML = ''
+                playerScore = 0
+                computerScore = 0
+                }
+            )
+        }
+        // first tried to remove child. that works if the player wins, but if the computer wins I get an error on:
+        // resultsContainer.removeChild(results)
+        // rockpaperscissors.html:73 Uncaught DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    
+        if (playerScore == 5) {
+            winningText('Congratulations, you\'ve won the game!')
+        }
+        if (computerScore == 5) {
+            winningText('Sorry, you\'ve lost the game.')
+        }
+
+        console.log(playerScore + ' and ' + computerScore)
+    })
+})
+
 const options = ['rock', 'paper', 'scissors']
 
 function computerPlay () {
@@ -19,13 +102,14 @@ function computerPlay () {
 
 function playRound (playerSelection, computerSelection) {
 	playerSelection = playerSelection.toLowerCase()
+    conputerSelection = computerSelection.toLowerCase()
   console.log(playerSelection + ' vs ' + computerSelection)
   if (playerSelection === computerSelection) {
   return "It's a tie!"
   } else if (playerSelection === 'rock' && computerSelection === "scissors" || playerSelection === 'paper' && computerSelection === "rock" || playerSelection === 'scissors' && computerSelection === "paper") {
-  return `You win! ${playerSelection} beats ${computerSelection}`
+  return `You win! ${playerSelection.toUpperCase()} beats ${computerSelection.toUpperCase()}`
   } else if (playerSelection === 'rock' && computerSelection === "paper" || playerSelection === 'paper' && computerSelection === "scissors" || playerSelection === 'scissors' && computerSelection === "rock") {
-  return `You lose! ${computerSelection} beats ${playerSelection}`
+  return `You lose! ${computerSelection.toUpperCase()} beats ${playerSelection.toUpperCase()}`
   }
   else {
 return 'There has been an error!'
@@ -37,7 +121,6 @@ return 'There has been an error!'
 function game () {
 	let playerScore = 0
     let computerScore = 0
-	for (i = 0; i <= 5; i++) {
         let playerSelection = prompt('Please enter rock, paper, or scissors')
         console.log(playerSelection)
         let results = playRound(playerSelection, computerPlay())
@@ -46,7 +129,7 @@ function game () {
             playerScore++;
         } else if (results.indexOf('lose!') !== -1) {
             computerScore++;
-        }
+
         console.log('You have won ' + playerScore + ' games.')
     }
     console.log("The results are in.")
@@ -59,7 +142,6 @@ function game () {
     }
 }
 
-game()
 
     </script>
 </body>
