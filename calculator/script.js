@@ -5,16 +5,26 @@ const equals = document.getElementById('equals')
 const clear = document.getElementById('clear')
 let displayValue = display.innerText
 
-const reg = /(x|\/|\+|\-)/
+const reg = /([x\/\+\-])/
+ // (?<=\d) is a nice thought to make sure it's preceded by a digit (so you can add negative numbers) but throws errors if first number is a negative number
 
 digits.forEach((digit) => {
     digit.addEventListener('click', (e) => {
         e.preventDefault()
         if (digit.innerText == '.') {
-            if (display.innerText.includes('.')) {
+                //conditions for decimals: checks if there is another decimal in the same number
+                // (if no operator, or decimal is after the operator) 
+            if (!reg.test(display.innerText) && display.innerText.includes('.')) {
                 alert('error! multiple decimal points are not allowed')
+            } else if (reg.test(display.innerText)) {
+                let displayString = display.innerText.split(reg)
+                if (displayString[2].includes('.')){
+                    alert('error! multiple decimal points are not allowed')
+                } else {
+                    populateDisplay('.')
+                }
             } else {
-                populateDisplay(digit.innerText)
+                populateDisplay('.')
             }
         } else (populateDisplay(digit.innerText))
     })
@@ -23,7 +33,9 @@ digits.forEach((digit) => {
 operators.forEach((operator) => {
     operator.addEventListener('click', (e) => {
         e.preventDefault()
-        if (reg.test(display.innerText)) {
+        if (!/\d/.test(display.innerText)) {
+            alert ('error! please enter a digit first')
+        } else if (reg.test(display.innerText)) {
             processResult()
             populateDisplay(operator.innerText)
         } else {
@@ -65,7 +77,6 @@ function processResult () {
     let displayString = display.innerText.split(reg)
     console.log(displayString)
     let result = operate(displayString[0], displayString[1], displayString[2])
-    console.log(result)
     displayResult(result)
 }
 
@@ -89,21 +100,25 @@ function operate (num1, operator, num2) {
     }
 }
 
+function truncate (num) {
+    console.log(num)
+    return Math.round(num * 10000) / 10000
+}
 
 function add (a, b) {
-    return a + b
+    return truncate(a + b)
 }
 
 function subtract (a, b) {
-    return a - b
+    return truncate(a - b)
 }
 
 function multiply (a, b) {
-    return a * b
+    return truncate(a * b)
 }
 
 function divide (a, b) {
-    return a / b
+    return truncate(a / b)
 }
 
 
