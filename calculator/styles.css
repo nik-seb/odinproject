@@ -51,4 +51,6 @@ button {
     padding: 5px;
     margin-top: 0.25em;
     border-radius: 10px;
+    text-align: right;
+    overflow:scroll;
 }
