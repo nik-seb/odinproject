@@ -1,0 +1,45 @@
+table {
+    /* display: block; */
+    margin: auto;
+    text-align: center;
+    padding-bottom:2em;
+}
+
+#calc {
+    margin: auto;
+    text-align: center;
+    background: grey;
+    width: 25%;
+    padding:1em;
+    box-sizing: border-box;
+}
+
+tbody {
+    display: block;
+}
+
+main {
+    text-align: center;
+    margin: auto;
+}
+
+
+tr {
+    width: 2000px;
+}
+
+button {
+    height: 2.2em;
+    width: 2.2em;
+    font-size:1.5em;
+}
+
+#display {
+    font-size: 2em;
+    background-color: black;
+    color: white;
+    display: block;
+    width: 210px;
+    padding: 5px;
+    margin-top: 0.25em;
+}

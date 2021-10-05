@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etch-A-Sketch</title>
+    <style>
+        body, h1, div {
+            text-align: center;
+            margin: auto;
+            padding: 0px;
+        }
+
+        .block {
+            box-sizing: border-box;
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            border:1px dotted darkgray;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .hover-block {
+            background-color: gray;
+        }
+
+        #main {
+            width: 800px;
+            height: 400px;
+            margin: auto;
+            margin-top: 20px;
+            padding: 5px;
+            font-size: 0px;
+            border: 20px solid red;
+            border-radius: 20px;
+            background-color: lightgray;
+            background-clip: border-box;
+        }
+
+        button {
+            text-align: right;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Etch-A-Sketch</h1>
+    <br>
+    <button>Start Over</button>
+    <br>
+    <div id='main'></div>
+
+<script>
+    const main = document.getElementById('main')
+    const button = document.querySelector('button')
+
+    let divHeight = 400
+    let divWidth = 800
+
+    let blockDivision = 16
+
+    function setCanvas () {
+        main.style.height = `${divHeight}px`
+        main.style.width = `${divWidth}px`
+        for (let i=1; i <=blockDivision*blockDivision; i++) {
+            createBlocks()
+        }
+        setBlockBehavior()
+    }
+
+    setCanvas()
+
+    function createBlocks () {
+        console.log('creating blocks')
+        const newBlock = document.createElement('div')
+        newBlock.style.height = `${divHeight/blockDivision}px`
+        newBlock.style.width = `${divWidth/blockDivision}px`
+        // const windowWidth = window.innerWidth
+        // newBlock.style.width = `${windowWidth/16}px`
+        // const windowHeight = window.innerHeight
+        // newBlock.style.height = `${windowHeight/16}px`
+        newBlock.className = 'block'
+        main.appendChild(newBlock)
+    }
+
+    button.addEventListener('click', e => {
+        e.preventDefault()
+        let userInput = prompt('Please enter number of squares per side (max 100)', '16')
+        let translatedInput = Number(userInput)
+        console.log(userInput)
+        if (userInput > 100 || userInput < 2 || userInput == null) {
+            alert('Please enter a number between 2-100')
+        } else {
+            blockDivision = Number(userInput)
+            main.innerHTML = ''
+            setCanvas()
+        }
+    })
+
+    function setBlockBehavior () {
+        const blocks = document.querySelectorAll('.block')
+
+        // for a set, predetermined color:
+    // blocks.forEach(item => {
+    //     item.addEventListener('mouseover', (e) => {
+    //         let blockClass = e.target.className
+    //         if (blockClass.indexOf('hover-block') == -1) {
+    //             e.target.className += ' hover-block'
+    //         }
+    //     })
+    // })
+
+    blocks.forEach(item => {
+        item.addEventListener('mouseover', (e) => {
+            let blockClass = e.target.className
+            if (blockClass.indexOf('color-set') == -1) {
+                e.target.className += ' color-set'
+                e.target.style.backgroundColor = randomColor()
+            } else {
+                e.target.style.backgroundColor = tint (e.target.style.backgroundColor)
+            }
+        })
+    })
+
+    }
+
+    function randomColor () {
+        let red = randomize(255)
+        let green = randomize(255)
+        let blue = randomize(255)
+        return `rgb(${red}, ${green}, ${blue})`
+    }
+
+        //almost gets to black in 10 passes
+    function tint (rgb) {
+        console.log('tinting')
+        let splitColors = rgb.split(',')
+        splitColors[0] = splitColors[0].slice(4)
+        splitColors[1] = splitColors[1].slice(1)
+        splitColors[2] = splitColors[2].slice(1)
+        splitColors[2] = splitColors[2].split(')')
+        splitColors[2] = splitColors[2][0]
+        console.log(`'${splitColors[0]}' and '${splitColors[1]}' and '${splitColors[2]}'`)
+        let newRed = Math.round(splitColors[0]-(splitColors[0]*0.20))
+        let newGreen = Math.round(splitColors[1]-(splitColors[1]*0.20))
+        let newBlue = Math.round(splitColors[2]-(splitColors[2]*0.20))
+        if (newRed < 20 && newGreen < 20 && newBlue < 20) {
+            newRed = 0
+            newGreen = 0
+            newBlue = 0
+        }
+        console.log(`rgb(${newRed}, ${newGreen}, ${newBlue})`)
+        return `rgb(${newRed}, ${newGreen}, ${newBlue})`
+    }
+
+    function randomize (max) {
+        return Math.floor(Math.random()*max)
+    }
+
+</script>
+    
+</body>
+</html>
