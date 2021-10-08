@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library OP</title>
+    <style>
+
+        #book-input {
+            display:block;
+            margin:auto;
+            text-align: center;
+            line-height: 2em;
+        }
+
+        table {
+            table-layout: fixed;
+            width: 50%;
+            text-align: center;
+            margin: auto;
+            margin-top:2em;
+        }
+
+        th {
+            background: bisque;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <form id= 'book-input'>
+        <p>Add new books below.</p>
+    <label for='title'>Title</label>
+    <input type='text' name='title' id='title'>
+    <label for='author'>Author</label>
+    <input type='text' name='author' id='author'><br>
+    <label for='pages'>Pages</label>
+    <input type='text' name='pages' id='pages'>
+    <label for='read'>Read</label>
+    <input type='text' name='read' id='read'><br>
+    <button type='submit' id ='submit-btn'>Add book</button>
+</form></div>
+    <table>
+        <tbody>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Pages</th>
+                <th>Read?</th>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        const table = document.querySelector('tbody')
+
+        let myLibrary = []
+        const hobbit = new Book ('The Hobbit', 'JRR Tolkein', '295', 'y')
+        myLibrary.push(hobbit)
+        const hobbit2 = new Book ('The Hobbit2', 'JRR Tolkein', '295', 'y')
+        myLibrary.push(hobbit2)
+
+        function Book (title, author, pages, read) {
+            this.title = title
+            this.author = author
+            this.pages = pages
+            this.read = read
+            console.log(this)
+            this.info = function () {
+                return `${title} by ${author}, ${pages} pages, ${isread()}`
+            }
+            this.isread = function () {
+                if (read === 'y') {
+                    return 'read'
+                }
+                if (read === 'n') {
+                    return 'not read yet'
+                }
+            }
+
+            if (myLibrary.length == 0) {
+                console.log(this.title + ' gets a 0 index')
+                this.indexID = 0
+            } else {
+                console.log(myLibrary.entries)
+                let lastIndex = myLibrary[myLibrary.length-1].indexID
+                console.log(lastIndex)
+                this.indexID = lastIndex+1
+            }
+        }
+
+        console.log(hobbit.indexID)
+        console.log(hobbit2.indexID)
+
+        window.addEventListener('load', function () {
+            for (let book of myLibrary) {
+                displayBooks(book)
+            }
+        })
+
+        const submitBtn = document.getElementById('submit-btn')
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            addBook()
+        })
+
+        function addBook () {
+            let title = document.getElementById('title').value
+            let author = document.getElementById('author').value
+            let pages = document.getElementById('pages').value
+            let read = document.getElementById('read').value
+            let newBook = new Book(title, author, pages, read)
+            myLibrary.push(newBook)
+            document.getElementById('title').value = ''
+            document.getElementById('author').value = ''
+            document.getElementById('pages').value = ''
+            document.getElementById('read').value = ''
+            displayBooks(newBook)
+        }
+
+        for (const [key, value] of Object.entries(hobbit)) {
+  console.log(`${key}: ${value}`);
+}
+
+        function displayBooks (book) {
+            console.log('running book')
+            newRow = document.createElement('tr')
+            let newTitle = document.createElement('td')
+            newTitle.innerText = book.title
+            newRow.appendChild(newTitle)
+            let newAuthor = document.createElement('td')
+            newAuthor.innerText = book.author
+            newRow.appendChild(newAuthor)
+            let newPages = document.createElement('td')
+            newPages.innerText = book.pages
+            newRow.appendChild(newPages)
+            let newRead = document.createElement('td')
+            newRead.innerText = book.isread()
+            newRow.appendChild(newRead)
+            let newIndex = book.indexID
+            let deleteButton = document.createElement('td')
+            deleteButton.innerHTML = `<button class="delete-btn" id="id${newIndex}">Remove</button>`
+            newRow.appendChild(deleteButton)
+            table.appendChild(newRow)
+            deleteButton.addEventListener('click', (e) => {
+                console.log(newIndex)
+                myLibrary = myLibrary.filter((item) => {
+                    if (!item.indexID == newIndex) {
+                        console.log('true')
+                        return true
+                    }
+                })
+                console.log('book id: ' + book.indexID + ', myLibrary: ' + myLibrary.length)
+                deleteButton.parentNode.remove()
+                console.log(newIndex)
+            })
+        }
+
+
+
+    </script>
+</body>
+</html>
