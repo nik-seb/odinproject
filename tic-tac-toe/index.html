@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+</head>
+<body>
+    
+    <script>
+
+        const gameboard = (function(){
+            const rows = [1, 2, 3]
+            const cols = ['a', 'b', 'c']
+            const boardArray = []
+            function populateArray (rows, cols) {
+                for (let row in rows) {
+                    for (let col in cols) {
+                        let newSquare = `${rows[row]}${cols[col]}`
+                        boardArray.push(newSquare)
+                    }
+                }
+            }
+            return (populateArray(rows, cols), boardArray) //do need to run populateArray before returning boardArray or is not filled
+        })()
+        console.log(gameboard)
+        
+    </script>
+</body>
+</html>
