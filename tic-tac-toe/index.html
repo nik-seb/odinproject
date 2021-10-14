@@ -6,12 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     <style>
+        #board table, #board tbody, #board tr {
+            text-align: center;
+            margin: auto;
+            display: block;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
         td {
             width: 50px;
             height: 50px;
             display: inline-block;
             border: 1px solid black;
             margin: 0px;
+            text-align: center;
+            font-size: 45px;
         }
     </style>
 </head>
@@ -42,33 +54,68 @@
         const gameboard = (function(){
             const board = document.getElementById('board')
             const cells = document.querySelectorAll('td')
-            const rows = [1, 2, 3]
-            const cols = ['a', 'b', 'c']
+            const rows = ['a', 'b', 'c']
+            const cols = [1, 2, 3]
             const boardArray = []
             function populateArray (rows, cols) {
                 for (let row in rows) {
                     for (let col in cols) {
                         let newSquare = `${rows[row]}${cols[col]}`
+                        // {'row': rows[row], 'col': cols[col], 'val': ''}
                         boardArray.push(newSquare)
                     }
                 }
+                console.log(boardArray)
             }
 
-            function nameCells () {
+            function setupCells () {
+                // name cells
                 for (let i = 0; i < cells.length; i++) {
                     cells[i].id = boardArray[i]
                 }
+                //watch cells 
+                Array.from(cells).forEach((cell) => {
+                    cell.addEventListener('click', (e) => {
+                        setTimeout(function() {
+                            let cellMarker = cell.innerText
+                            let cellID = cell.id
+                            let match = boardArray.indexOf(cellID)
+                            boardArray[match] = {'row': cellID[0], 'col': cellID[1], 'mark': cellMarker}
+                            console.log(boardArray)
+                            checkForWin('X')
+                            checkForWin('Y')
+                        }, 200)
+                    })
+                })
             }
 
-            function watchCells () {
-                for (let i = 0; i < cells.length; i++) {
-                    cells[i].id = boardArray[i]
+            function checkForWin (marker) {
+                // let winners = [[0,1,2], [3,4,5], [6,7,8], ]
+                let rA = 0, rB = 0, rC = 0, c1 = 0, c2 = 0, c3 = 0
+                // diagonals are [a1, b2, c3] and [c1, b2, a3]
+                let rowCounter = 0
+                let colCounter = 0
+                // make row/col counter arrays with subarrays, push IDs, if subarray.length == 3 then win?
+                let diagCounter = 0
+                // for (let i = 0; i < boardArray.length; i++) {
+                //     if () 
+                // }
+                let eligibleCells = []
+                for (let i = 0; i < boardArray.length; i++) {
+                    if (boardArray[i].length === 2) {
+                        continue
+                    }
+                    if (boardArray[i].mark === marker) {
+                        eligibleCells.push(boardArray[i])
+                    }
                 }
+
             }
-            
-            return (populateArray(rows, cols), boardArray, nameCells(), watchCells()) //do need to run populateArray before returning boardArray or is not filled
+
+            return (populateArray(rows, cols), boardArray, setupCells()) //do need to run populateArray before returning boardArray or is not filled
         })()
-        console.log(gameboard)
+
+        // console.log(gameboard.boardArray) // this doesn't work and I don't understand why
 
         const gamePlay = (function(){
             const board = document.getElementById('board')
@@ -78,6 +125,9 @@
             const placeMark = function () {
                 Array.from(cells).forEach((cell) => {
                     cell.addEventListener('click', (e) => {
+                        if (cell.innerText) {
+                            return // prevents any action from occurring if cell is already filled
+                        }
                         const thisCell = cell.id
                         let thisPlayer = ''
                         if (playerMarker.innerText === 'Player X') {
