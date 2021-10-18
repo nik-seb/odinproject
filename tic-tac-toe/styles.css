@@ -1,7 +1,5 @@
-#board, #board table, #board tbody, #board tr {
-    text-align: center;
-    margin: auto;
-    display: block;
+table {
+    border-spacing: 0px;
 }
 
 h1, h2 {
@@ -18,18 +16,24 @@ td {
     font-size: 45px;
 }
 
-#player-info {
-    display: flex;
-    width: 50%;
-    margin: auto;
-    justify-content: center;
+#board {
+    text-align: center;
 }
 
-form {
-    padding: 5px;
-    margin: 5px;
+#player-info {
+    width: 20%;
+}
+
+#content-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: baseline;
 }
 
 input {
     margin-top: 5px;
+}
+
+#scoreboard {
+    width: 20%;
 }

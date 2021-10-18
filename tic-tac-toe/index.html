@@ -9,31 +9,46 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-
-    <h1><span id='x-title'>X</span> vs <span id='o-title'>O</span></h1>
-    <h2>Current Player: <span class='turn-marker' id='x-mark'>Player X</span></h2>
-    <div id='board'>
-        <table>
-            <tbody>
-                <tr>
-                    <td></td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td></td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td></td><td></td><td></td>
-                </tr>
-            </tbody>
-        </table>
-        <p><button id='clear-btn'>Clear board and restart</button></p>
+    <div id='header-info'>
+        <h1><span id='x-title'>X</span> vs <span id='o-title'>O</span></h1>
+        <h2>Next Move: <span class='turn-marker' id='x-mark'>Player X</span></h2>
+    </div>
+    <div id='content-container'>
         <div id='player-info'>
-            <form id='player1'><label for="play1">Enter name for Player X:</label><br>
-                <input type="text" name="play1" id="play1"> <br> 
-                <input type='submit'> </form>
-            <form id="player2"><label for="play2">Enter name for Player O:</label><br>
-                <input type="text" name="play2" id="play2"> <br> 
-                <input type='submit'></form>
+            <form><label for="play1">Enter name for Player X:</label><br>
+                <input type="text" name="play1" id="play1"> <br>
+            <p>
+                <label for="play2">Enter name for Player O:</label><br>
+                <input type="text" name="play2" id="play2"> <br>
+            </p>
+            <p><input type='submit'></form></p>
+        </div>
+        <div id='board'>
+            <table>
+                <tbody>
+                    <tr>
+                        <td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><button id='clear-btn'>Clear board and restart</button></p>
+        </div>
+        <div id='scoreboard'>
+            <h4>Games Won:</h4>
+            <p>
+                <span id='x-win-mark'>Player X</span>: <br>
+                <span id='x-wins'>0</span>
+            </p>
+            <p>
+                <span id='o-win-mark'>Player O</span>: <br>
+                <span id='o-wins'>0</span>
+            </p>
         </div>
     </div>
 </body>

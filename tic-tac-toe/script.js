@@ -3,10 +3,7 @@
             // make Player.score functional -- keep running tally below player names?
 
 
-// NO LONGER PREVENTS PLAYER FROM MOVING AFTER GAME WON
-
 const gameboard = (function(){
-    const board = document.getElementById('board')
     const cells = document.querySelectorAll('td')
     const rows = ['a', 'b', 'c']
     const cols = [1, 2, 3]
@@ -178,9 +175,6 @@ const gamePlay = (function(){
 })()
 
 const Player = function (name, nom) {
-    // let nameVal = document.getElementById(this.nom)
-    // let givenName = nom.value
-    // console.log(nameVal)
 
     const score = 0
 
