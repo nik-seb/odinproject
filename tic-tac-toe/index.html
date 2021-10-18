@@ -12,7 +12,7 @@
             display: block;
         }
 
-        h2 {
+        h1, h2 {
             text-align: center;
         }
 
@@ -25,11 +25,29 @@
             text-align: center;
             font-size: 45px;
         }
+
+        #player-info {
+            display: flex;
+            width: 50%;
+            margin: auto;
+            justify-content: center;
+        }
+
+        form {
+            padding: 5px;
+            margin: 5px;
+        }
+
+        input {
+            margin-top: 5px;
+        }
+
     </style>
 </head>
 <body>
 
-    <h2>Current Player: <span id='turn-marker'>Player X</span></h2>
+    <h1><span id='x-title'>X</span> vs <span id='o-title'>O</span></h1>
+    <h2>Current Player: <span class='turn-marker' id='x-mark'>Player X</span></h2>
     <div id='board'>
         <table>
             <tbody>
@@ -45,6 +63,14 @@
             </tbody>
         </table>
         <p><button id='clear-btn'>Clear board and restart</button></p>
+        <div id='player-info'>
+            <form id='player1'><label for="play1">Enter name for Player X:</label><br>
+                <input type="text" name="play1" id="play1"> <br> 
+                <input type='submit'> </form>
+            <form id="player2"><label for="play2">Enter name for Player O:</label><br>
+                <input type="text" name="play2" id="play2"> <br> 
+                <input type='submit'></form>
+        </div>
     </div>
 
 
@@ -76,7 +102,30 @@
                 }
             }
 
-            return (populateArray(rows, cols), boardArray, setupCells()) //do need to run populateArray before returning boardArray or is not filled
+            function setNames () {
+                const submitBtns = document.querySelectorAll('input[type="submit"]')
+                const xTitle = document.getElementById('x-title')
+                const oTitle = document.getElementById('o-title')
+                submitBtns.forEach((btn) => {
+                    btn.addEventListener('click', (e) => {
+                    e.preventDefault()
+                    let xName = document.getElementById('play1').value
+                    if (xName === '' || !xName) {
+                        xName = playerX.defName
+                    }
+                    playerX.name = xName
+                    xTitle.innerText = xName
+                    let oName = document.getElementById('play2').value
+                    if (oName === '' || !oName) {
+                        oName = playerO.defName
+                    }
+                    playerO.name = oName
+                    oTitle.innerText = oName
+                })
+                })
+            }
+
+            return (populateArray(rows, cols), boardArray, setupCells(), setNames()) //do need to run populateArray before returning boardArray or is not filled
         })()
 
         // console.log(gameboard.boardArray) // this doesn't work and I don't understand why
@@ -84,7 +133,7 @@
         const gamePlay = (function(){
             const board = document.getElementById('board')
             const cells = document.querySelectorAll('td')
-            const playerMarker = document.getElementById('turn-marker')
+            const playerMarker = document.querySelector('.turn-marker')
 
                 let tally = 0
                 let xMoves = []
@@ -101,22 +150,25 @@
                         const thisCell = cell.id
                         let thisPlayer = ''
                         console.log('placemark is running', tally, xMoves)
-                        if (playerMarker.innerText === 'Player X') {
+                        console.log(playerMarker.id)
+                        if (playerMarker.id === 'x-mark') {
                             thisPlayer = 'X'
                             xMoves.push(thisCell)
                             console.log('placemark is running', tally, xMoves)
                             if (checkForWin(xMoves)) {
-                                announceWin('Player X') // link into player names
+                                announceWin(playerX.name) // link into player names
                             }
-                            playerMarker.innerText = 'Player O'
-                        } else if (playerMarker.innerText === 'Player O') {
+                            playerMarker.id = 'o-mark'
+                            playerMarker.innerText = playerO.name
+                        } else if (playerMarker.id === 'o-mark') {
                             thisPlayer = 'O'
                             oMoves.push(thisCell)
                             console.log('placemark is running', tally, xMoves)
                             if (checkForWin(oMoves)) {
-                                announceWin('Player O')
+                                announceWin(playerO.name)
                             }
-                            playerMarker.innerText = 'Player X'
+                            playerMarker.id = 'x-mark'
+                            playerMarker.innerText = playerX.name
                         }
                         cell.innerText = thisPlayer
                         tally++
@@ -190,14 +242,19 @@
             return (placeMark(), clearBoard())
         })()
 
-        const Player = function (name) {
-            let thisPlayer = this.name
+        const Player = function (defName, nom) {
+            // let nameVal = document.getElementById(this.nom)
+            // let givenName = nom.value
+            // console.log(nameVal)
+            console.log(defName, this.dName)
 
             const score = 0
+
+            return {defName, nom, score}
         }
 
-        const playerX = Player('X')
-        const playerO = Player('O')
+        const playerX = Player('X', 'play1')
+        const playerO = Player('O', 'play2')
         
     </script>
 </body>
