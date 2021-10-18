@@ -69,43 +69,54 @@ const gamePlay = (function(){
     const placeMark = function () {
         console.log('placemark has begun', tally, xMoves)
         cells.forEach((cell) => {
-            console.log('foreach is adding an event')
-            cell.addEventListener('click', (e) => {
-                console.log('event triggered', tally, xMoves)
-                if (cell.innerText) {
-                    return // prevents any action from occurring if cell is already filled
-                }
-                const thisCell = cell.id
-                let thisPlayer = ''
-                console.log('placemark is running', tally, xMoves)
-                if (playerMarker.id === 'x-mark') {
-                    thisPlayer = 'X'
-                    xMoves.push(thisCell)
-                    console.log('placemark is running', tally, xMoves)
-                    if (checkForWin(xMoves)) {
-                        announceWin(playerX.name) // link into player names
-                    }
-                    playerMarker.id = 'o-mark'
-                    playerMarker.innerText = playerO.name
-                } else if (playerMarker.id === 'o-mark') {
-                    thisPlayer = 'O'
-                    oMoves.push(thisCell)
-                    console.log('placemark is running', tally, xMoves)
-                    if (checkForWin(oMoves)) {
-                        announceWin(playerO.name)
-                    }
-                    playerMarker.id = 'x-mark'
-                    playerMarker.innerText = playerX.name
-                }
-                cell.innerText = thisPlayer
-                tally++
-                console.log('end of placemark event', tally, xMoves)
-                console.log('placing from player: ' + thisPlayer + ' in ' + thisCell)
-                if (tally === 9) {
-                    announceWin('Tie')
-                }
-            })
+            cell.addEventListener('click', cellClicker)
         })
+    }
+
+    const cellClicker = function (e){
+        const cell = e.target
+        console.log('event triggered', tally, xMoves)
+        if (cell.innerText) {
+            return // prevents any action from occurring if cell is already filled
+        }
+        const thisCell = cell.id
+        let thisPlayer = ''
+        console.log('placemark is running', tally, xMoves)
+        if (playerMarker.id === 'x-mark') {
+            thisPlayer = 'X'
+            xMoves.push(thisCell)
+            console.log('placemark is running', tally, xMoves)
+            if (checkForWin(xMoves)) {
+                announceWin(playerX.name) // link into player names
+                removeClicker()
+            }
+            playerMarker.id = 'o-mark'
+            playerMarker.innerText = playerO.name
+        } else if (playerMarker.id === 'o-mark') {
+            thisPlayer = 'O'
+            oMoves.push(thisCell)
+            console.log('placemark is running', tally, xMoves)
+            if (checkForWin(oMoves)) {
+                announceWin(playerO.name)
+                removeClicker()
+            }
+            playerMarker.id = 'x-mark'
+            playerMarker.innerText = playerX.name
+        }
+        cell.innerText = thisPlayer
+        tally++
+        console.log('end of placemark event', tally, xMoves)
+        console.log('placing from player: ' + thisPlayer + ' in ' + thisCell)
+        if (tally === 9) {
+            announceWin('Tie')
+            removeClicker()
+        }
+        function removeClicker() {
+            cells.forEach((cell) => {
+                cell.removeEventListener('click', cellClicker)
+                console.log('removed! ', cell)
+            })
+        }
     }
 
     const announceWin = function (winner) {
@@ -115,10 +126,6 @@ const gamePlay = (function(){
         } else {
             announce = `${winner} has won!`
         } // make these print out
-        cells.forEach((cell) => {
-            cell.removeEventListener
-            console.log('removed! ', cell)
-        })
         let display = document.createElement('div')
         display.id = 'winner'
         display.innerText = announce
