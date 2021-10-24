@@ -45,12 +45,15 @@ operators.forEach((operator) => {
 })
 
 function receiveOps (op) {
-    if (!/\d/.test(display.innerText)) {
+    // checks if operator isn't preceded by digit and doesn't equal '-' (to allow negative num processing)
+    if (!/\d/.test(display.innerText) && op != '-') {
         alert ('error! please enter a digit first')
-    } else if (reg.test(display.innerText)) {
+    } else if (reg.test(display.innerText) && op != '-') {
+        // if there is already an operator, calculate displayed operation and then append the operator to displayed result
         processResult()
         populateDisplay(op)
     } else {
+        // just add the operator to the display
         populateDisplay(op)
     }
 }
@@ -106,11 +109,49 @@ function displayResult (val) {
     display.innerText = val
 }
 
+//NOT WORKING UGH
+function processNegative(predisplayString) {
+    // split(reg) will split negatives as follows: neg[0], dig[1], op[2], dig[3] OR neg[0], dig [1], op[2], neg[3], dig[4] OR dig[0], op[1], neg[2], dig[3]
+    console.log(predisplayString[0])
+    displayString = predisplayString.map((string, index) => {
+        console.log(predisplayString[index])
+            //if "-" is not preceded by a digit (and therefore is a neg and not an operator)
+        if (string === '-' && !/\d/.test(predisplayString[index-1])) {
+            console.log(string)
+            return `${string}${predisplayString[index+1]}`
+        } else if (/\d/.test(string) && predisplayString[index-1] === '-' && !/\d/.test(predisplayString[index-2])) {
+            // if preceded by "-" and no other digit and therefore already included in neg number combo
+            // eg., -6-5: 5 != true, 6 = true; 5+-6: -6 = true
+            return ''
+        } else {
+            return string
+        }
+    })
+    console.log(displayString)
+    let result = []
+    for (let string in displayString) {
+        if (displayString[string] != '') {
+            result.push(displayString[string])
+        }
+    }
+    if (result.length != 3) {
+        alert('error! please clear and try again')
+        console.log(result.length, result)
+    } else {
+        result = operate(result[0], result[1], result[2])
+        displayResult(result)
+    }
+}
+
 function processResult () {
     let displayString = display.innerText.split(reg)
-    console.log(displayString)
-    let result = operate(displayString[0], displayString[1], displayString[2])
-    displayResult(result)
+     //checks for excess values caused by negative numbers
+    if (displayString.length > 3) {
+        processNegative(displayString)
+    } else {
+        let result = operate(displayString[0], displayString[1], displayString[2])
+        displayResult(result)
+    }
 }
 
 function operate (num1, operator, num2) {
