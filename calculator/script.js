@@ -1,15 +1,24 @@
-// TO-DO: add backspace, fix negative nums (even if not entered, will break if result is neg)
+// TO-DO: add backspace
+//UM. Try resizing to narrow screen and see if you can spot the problem. Fix CSS
 
 const display = document.getElementById('display')
 const digits = document.querySelectorAll('.digit')
 const operators = document.querySelectorAll('.operator')
 const equals = document.getElementById('equals')
 const clear = document.getElementById('clear')
-let displayValue = display.innerText
+const back = document.getElementById('back')
+const buttons = document.querySelectorAll('button')
+let displayValue = display.innerText //actually never used
 
 const reg = /([x\/\+\-])/
 // all operators
  // (?<=\d) is a nice thought to make sure it's preceded by a digit (so you can add negative numbers) but throws errors if first number is a negative number
+
+buttons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+        console.log(btn.innerText + ' on display')
+    })
+})
 
 digits.forEach((digit) => {
     digit.addEventListener('click', (e) => {
@@ -72,10 +81,22 @@ clear.addEventListener('click', (e) => {
     display.innerHTML = ''
 })
 
+back.addEventListener('click', (e) => {
+    e.preventDefault()
+    goBack()
+})
+
+function goBack () {
+    let newDisplay = display.innerText.slice(0, -1)
+    console.log(newDisplay)
+    display.innerText = newDisplay
+}
+
 const regDigits = /(\d)/
 
 document.addEventListener('keydown', (e) => {
-    console.log(e.key)
+    e.preventDefault()
+    console.log(e.key + ' on keyboard')
     if (regDigits.test (e.key)) {
         receiveDigits(e.key)
     }
@@ -91,6 +112,9 @@ document.addEventListener('keydown', (e) => {
         } else {
             processResult()
         }
+    }
+    if (e.key === 'Backspace') {
+        goBack()
     }
 })
 
