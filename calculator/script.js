@@ -1,5 +1,5 @@
-// TO-DO: add backspace
-//UM. Try resizing to narrow screen and see if you can spot the problem. Fix CSS
+//OK. Try resizing to narrow screen and see if you can spot the problem. Fix CSS
+// feature: log recent calculations in notepad; log recently used numbers in banner so user can select and immediately implement (eg., if they are dividing various numbers by 2.735 it will save time)
 
 const display = document.getElementById('display')
 const digits = document.querySelectorAll('.digit')
@@ -31,18 +31,18 @@ function receiveDigits (val) {
     if (val == '.') {
         //conditions for decimals: checks if there is another decimal in the same number
         // (if no operator, or decimal is after the operator) 
-    if (!reg.test(display.innerText) && display.innerText.includes('.')) {
-        alert('error! multiple decimal points are not allowed')
-    } else if (reg.test(display.innerText)) {
-        let displayString = display.innerText.split(reg)
-        if (displayString[2].includes('.')){
+        if (!reg.test(display.innerText) && display.innerText.includes('.')) {
             alert('error! multiple decimal points are not allowed')
+        } else if (reg.test(display.innerText)) {
+            let displayString = display.innerText.split(reg)
+            if (displayString[2].includes('.')){
+                alert('error! multiple decimal points are not allowed')
+            } else {
+                populateDisplay('.')
+            }
         } else {
             populateDisplay('.')
         }
-    } else {
-        populateDisplay('.')
-    }
 } else (populateDisplay(val))
 }
 
@@ -106,6 +106,9 @@ document.addEventListener('keydown', (e) => {
     if (reg.test(e.key)) {
         receiveOps(e.key)
     }
+    if (e.key === '.') {
+        receiveDigits('.')
+    }
     if (e.key === '=' || e.key === 'Enter') {
         if (!reg.test(display.innerText)) {
             return displayResult(display.innerText)
@@ -116,6 +119,10 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Backspace') {
         goBack()
     }
+    if (e.key === 'c') {
+        console.log('a c')
+        display.innerHTML = ''
+    } //clears
 })
 
 // function checkValidity () {
