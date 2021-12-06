@@ -1,8 +1,4 @@
-// feature: log recent calculations in notepad; log recently used numbers in banner so user can select and immediately implement (eg., if they are dividing various numbers by 2.735 it will save time)
-
-// bug: if the first number is a negative number, it will be added to notepad when an operator is input
-//   because the reg test only checks for existing operators instead of checking operator vs negative.
-//   finesse that
+// next feature: allow quick-selecting numbers. add event listeners to groups of digits on notepad, then add the selected digit(s) to the calculator display
 
 const display = document.getElementById('display')
 const digits = document.querySelectorAll('.digit')
@@ -16,7 +12,9 @@ let displayValue = display.innerText //actually never used
 
 const reg = /([x\/\+\-])/
 // all operators
- // (?<=\d) is a nice thought to make sure it's preceded by a digit (so you can add negative numbers) but throws errors if first number is a negative number
+
+const regActiveOp = /(?<=\d[x\/\+\-])/
+// only functional operators, ie., preceded by a digit; does not match negative markers
 
 buttons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -61,8 +59,8 @@ function receiveOps (op) {
     // checks if operator isn't preceded by digit and doesn't equal '-' (to allow negative num processing)
     if (!/\d/.test(display.innerText) && op != '-') {
         alert ('error! please enter a digit first')
-    } else if (reg.test(display.innerText) && op != '-') {
-        // if there is already an operator, calculate displayed operation and then append the operator to displayed result
+    } else if (regActiveOp.test(display.innerText) && /\d/.test(display.innerText[display.innerText.length-1])) {
+        // if there is already a functional operator and the last entered character is a digit, calculate displayed operation and then append the operator to displayed result
         processResult()
         populateDisplay(op)
     } else {
@@ -73,7 +71,7 @@ function receiveOps (op) {
 
 equals.addEventListener('click', (e) => {
     e.preventDefault()
-    if (!reg.test(display.innerText)) {
+    if (!regActiveOp.test(display.innerText)) {
         return
     } else {
         processResult()
@@ -114,7 +112,7 @@ document.addEventListener('keydown', (e) => {
         receiveDigits('.')
     }
     if (e.key === '=' || e.key === 'Enter') {
-        if (!reg.test(display.innerText)) {
+        if (!regActiveOp.test(display.innerText)) {
             return
         } else {
             processResult()
@@ -161,8 +159,6 @@ function removeLine (target) {
     line.remove()
 }
 
-// only existing bug that I'm aware of here is that it won't automatically read a second operator as "=" and display the sum plus new operator
-    // but it will produce error message if someone tries to submit a string with multiple non-negative operators 
 function processNegative(predisplayString) {
     // split(reg) will split negatives as follows: neg[0], dig[1], op[2], dig[3] OR neg[0], dig [1], op[2], neg[3], dig[4] OR dig[0], op[1], neg[2], dig[3]
     console.log(predisplayString[0])
