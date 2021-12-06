@@ -16,11 +16,12 @@ main {
 
 #notepad {
     box-sizing: border-box;
+    margin-top: 1rem;
     margin-left: 2rem;
     width: 15rem;
-    height: 25rem;
+    height: 22rem;
     padding: 1rem;
-    background-color: bisque;
+    background-color: #ffecd6;
     border-right: 6px solid black;
     border-bottom: 6px solid black;
     overflow: scroll;
@@ -32,7 +33,7 @@ main {
     position: relative;
 }
 
-#notepad p:first-child {
+#notepad > p:first-child {
     font-weight: bold;
 }
 

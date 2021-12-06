@@ -7,7 +7,7 @@ const equals = document.getElementById('equals')
 const clear = document.getElementById('clear')
 const back = document.getElementById('back')
 const buttons = document.querySelectorAll('button')
-const notepad = document.getElementById('notepad')
+const history = document.getElementById('history')
 let displayValue = display.innerText //actually never used
 
 const reg = /([x\/\+\-])/
@@ -31,21 +31,21 @@ digits.forEach((digit) => {
 
 function receiveDigits (val) {
     if (val == '.') {
-        //conditions for decimals: checks if there is another decimal in the same number
-        // (if no operator, or decimal is after the operator) 
-        if (!reg.test(display.innerText) && display.innerText.includes('.')) {
-            alert('error! multiple decimal points are not allowed')
-        } else if (reg.test(display.innerText)) {
+        //conditions for decimals
+        //produces error if there is already a decimal but no operator, if there is no digit, or if the digits after the operator already contain a decimal
+        if (!regActiveOp.test(display.innerText) && display.innerText.includes('.')) {
+            alert('error! invalid number format')
+        } else if (regActiveOp.test(display.innerText)) {
             let displayString = display.innerText.split(reg)
-            if (displayString[2].includes('.')){
-                alert('error! multiple decimal points are not allowed')
+            if (displayString[displayString.length-1].includes('.')){
+                alert('error! invalid number format')
             } else {
                 populateDisplay('.')
             }
         } else {
             populateDisplay('.')
         }
-} else (populateDisplay(val))
+    } else (populateDisplay(val))
 }
 
 operators.forEach((operator) => {
@@ -57,8 +57,8 @@ operators.forEach((operator) => {
 
 function receiveOps (op) {
     // checks if operator isn't preceded by digit and doesn't equal '-' (to allow negative num processing)
-    if (!/\d/.test(display.innerText) && op != '-') {
-        alert ('error! please enter a digit first')
+    if (!/\d/.test(display.innerText) && op != '-' || display.innerText[display.innerText.length-1] === '.') {
+        alert ('error! please enter a valid number')
     } else if (regActiveOp.test(display.innerText) && /\d/.test(display.innerText[display.innerText.length-1])) {
         // if there is already a functional operator and the last entered character is a digit, calculate displayed operation and then append the operator to displayed result
         processResult()
@@ -71,9 +71,7 @@ function receiveOps (op) {
 
 equals.addEventListener('click', (e) => {
     e.preventDefault()
-    if (!regActiveOp.test(display.innerText)) {
-        return
-    } else {
+    if (regActiveOp.test(display.innerText)) {
         processResult()
     }
 })
@@ -112,9 +110,7 @@ document.addEventListener('keydown', (e) => {
         receiveDigits('.')
     }
     if (e.key === '=' || e.key === 'Enter') {
-        if (!regActiveOp.test(display.innerText)) {
-            return
-        } else {
+        if (regActiveOp.test(display.innerText)) {
             processResult()
         }
     }
@@ -126,13 +122,6 @@ document.addEventListener('keydown', (e) => {
         display.innerHTML = ''
     } //clears
 })
-
-// function checkValidity () {
-//     const reg = /(x|\/|\+|\-)/
-//     let operatorExists = reg.test(display.innerText)
-
-// }
-// was going to do check if multiple operators too, but easier to make a second operator = equals
 
 function populateDisplay (val) {
     display.innerText += val
@@ -150,7 +139,7 @@ function displayResult (string, result) {
         e.preventDefault()
         removeLine(e.target)
     })
-    notepad.appendChild(newLine)
+    history.prepend(newLine)
 }
 
 function removeLine (target) {
