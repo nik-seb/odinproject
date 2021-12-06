@@ -1,4 +1,3 @@
-// next feature: allow quick-selecting numbers. add event listeners to groups of digits on notepad, then add the selected digit(s) to the calculator display
 
 const display = document.getElementById('display')
 const digits = document.querySelectorAll('.digit')
@@ -13,7 +12,7 @@ let displayValue = display.innerText //actually never used
 const reg = /([x\/\+\-])/
 // all operators
 
-const regActiveOp = /(?<=\d[x\/\+\-])/
+const regActiveOp = /((?<=\d)[x\/\+\-])/
 // only functional operators, ie., preceded by a digit; does not match negative markers
 
 buttons.forEach((btn) => {
@@ -92,12 +91,10 @@ function goBack () {
     display.innerText = newDisplay
 }
 
-const regDigits = /(\d)/
-
 document.addEventListener('keydown', (e) => {
     e.preventDefault()
     console.log(e.key + ' on keyboard')
-    if (regDigits.test (e.key)) {
+    if (/\d/.test (e.key)) {
         receiveDigits(e.key)
     }
     if (e.key === '*') {
@@ -131,7 +128,9 @@ function displayResult (string, result) {
     display.innerText = result
 
     const newLine = document.createElement('p')
-    newLine.innerText = string + " = " + result
+    const stringConcat = string + " = " + result
+    const marked = markNotepad(stringConcat)
+    newLine.innerHTML = marked
     const newButton = document.createElement('button')
     newButton.innerText = 'x'
     newLine.appendChild(newButton)
@@ -140,6 +139,40 @@ function displayResult (string, result) {
         removeLine(e.target)
     })
     history.prepend(newLine)
+    addNotepadListeners(newLine)
+}
+
+function markNotepad (string) {
+    let newReg = /((?<=\d)[x\/\+\-])|(\=)/ // regActiveOp + '='
+    console.log(string)
+    let newString = string.split(newReg)
+    console.log(newString)
+    newString = newString.map((item) => {
+        if (/\d/.test(item)) {
+            console.log(item)
+            return '<span> ' + item + ' </span>'
+        } else {
+            return item
+        }
+    })
+    newString = newString.join(' ')
+
+    console.log(newString)
+    return newString
+}
+
+function addNotepadListeners (line) {
+    console.log(line)
+    const spans = line.querySelectorAll('span')
+    spans.forEach(span => {
+        console.log('a span', span)
+        span.addEventListener('click', e => appendNumber(span.innerText))
+    })
+}
+
+function appendNumber (num) {
+    console.log(num)
+    display.innerText += num
 }
 
 function removeLine (target) {
@@ -151,7 +184,7 @@ function removeLine (target) {
 function processNegative(predisplayString) {
     // split(reg) will split negatives as follows: neg[0], dig[1], op[2], dig[3] OR neg[0], dig [1], op[2], neg[3], dig[4] OR dig[0], op[1], neg[2], dig[3]
     console.log(predisplayString[0])
-    displayString = predisplayString.map((string, index) => {
+    let displayString = predisplayString.map((string, index) => {
         console.log(predisplayString[index])
             //if "-" is not preceded by a digit (and therefore is a neg and not an operator)
         if (string === '-' && !/\d/.test(predisplayString[index-1])) {
@@ -166,6 +199,7 @@ function processNegative(predisplayString) {
         }
     })
     console.log(displayString)
+    // push non-empty items into result array, validate format, and display result
     let result = []
     for (let string in displayString) {
         if (displayString[string] != '') {

@@ -9,6 +9,11 @@ color: #1f465d
 
 display color: #eof3ff*/
 
+/*TO-DO:
+-prevent long numbers from overlapping the x cancel button on notepad
+-try to adjust calc display so user doesn't have to scroll to see last numbers of a long calculation
+*/
+
 main {
     display: flex;
     justify-content: center;
@@ -51,6 +56,18 @@ main {
     bottom: 0px;
 }
 
+#notepad span {
+    cursor: default;
+    background: bisque;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    margin: 0.1rem;
+}
+
+#notepad span:hover {
+    border: 1px solid green;
+}
+
 #calc {
     text-align: center;
     background: grey;
@@ -76,6 +93,11 @@ button {
     border: 0px solid transparent;
     box-shadow: inset -2px -2px 0px 0px black, 2px 1px 7px 0px #616161;
     /* first gives crisp dark button inset, second a little spread */
+}
+
+#calc button:active {
+    background-color: lightgrey;
+    box-shadow: inset 2px 2px black, inset -1px -1px 0px #656565;
 }
 
 #neg {
