@@ -9,9 +9,48 @@ color: #1f465d
 
 display color: #eof3ff*/
 
+main {
+    display: flex;
+    justify-content: center;
+}
+
+#notepad {
+    box-sizing: border-box;
+    margin-left: 2rem;
+    width: 15rem;
+    height: 25rem;
+    padding: 1rem;
+    background-color: bisque;
+    border-right: 6px solid black;
+    border-bottom: 6px solid black;
+    overflow: scroll;
+}
+
+#notepad p {
+    border-bottom: 1px dashed grey;
+    font-family: Arial, Helvetica, sans-serif;
+    position: relative;
+}
+
+#notepad p:first-child {
+    font-weight: bold;
+}
+
+#notepad button {
+    font-size: 1rem;
+    height: 1rem;
+    width: 1rem;
+    background: none;
+    box-shadow: none;
+    padding: 0rem;
+    margin: 0.5rem;
+    color: brown;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
 
 #calc {
-    margin: auto;
     text-align: center;
     background: grey;
     width: 18rem;

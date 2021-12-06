@@ -1,5 +1,8 @@
-//OK. Try resizing to narrow screen and see if you can spot the problem. Fix CSS
 // feature: log recent calculations in notepad; log recently used numbers in banner so user can select and immediately implement (eg., if they are dividing various numbers by 2.735 it will save time)
+
+// bug: if the first number is a negative number, it will be added to notepad when an operator is input
+//   because the reg test only checks for existing operators instead of checking operator vs negative.
+//   finesse that
 
 const display = document.getElementById('display')
 const digits = document.querySelectorAll('.digit')
@@ -8,6 +11,7 @@ const equals = document.getElementById('equals')
 const clear = document.getElementById('clear')
 const back = document.getElementById('back')
 const buttons = document.querySelectorAll('button')
+const notepad = document.getElementById('notepad')
 let displayValue = display.innerText //actually never used
 
 const reg = /([x\/\+\-])/
@@ -70,7 +74,7 @@ function receiveOps (op) {
 equals.addEventListener('click', (e) => {
     e.preventDefault()
     if (!reg.test(display.innerText)) {
-        return displayResult(display.innerText)
+        return
     } else {
         processResult()
     }
@@ -111,7 +115,7 @@ document.addEventListener('keydown', (e) => {
     }
     if (e.key === '=' || e.key === 'Enter') {
         if (!reg.test(display.innerText)) {
-            return displayResult(display.innerText)
+            return
         } else {
             processResult()
         }
@@ -136,11 +140,29 @@ function populateDisplay (val) {
     display.innerText += val
 }
 
-function displayResult (val) {
-    display.innerText = val
+function displayResult (string, result) {
+    display.innerText = result
+
+    const newLine = document.createElement('p')
+    newLine.innerText = string + " = " + result
+    const newButton = document.createElement('button')
+    newButton.innerText = 'x'
+    newLine.appendChild(newButton)
+    newButton.addEventListener('click', (e) => {
+        e.preventDefault()
+        removeLine(e.target)
+    })
+    notepad.appendChild(newLine)
 }
 
-//NOT WORKING UGH
+function removeLine (target) {
+    const line = target.parentElement
+    console.log(line)
+    line.remove()
+}
+
+// only existing bug that I'm aware of here is that it won't automatically read a second operator as "=" and display the sum plus new operator
+    // but it will produce error message if someone tries to submit a string with multiple non-negative operators 
 function processNegative(predisplayString) {
     // split(reg) will split negatives as follows: neg[0], dig[1], op[2], dig[3] OR neg[0], dig [1], op[2], neg[3], dig[4] OR dig[0], op[1], neg[2], dig[3]
     console.log(predisplayString[0])
@@ -170,7 +192,8 @@ function processNegative(predisplayString) {
         console.log(result.length, result)
     } else {
         result = operate(result[0], result[1], result[2])
-        displayResult(result)
+        console.log('operating on negative')
+        displayResult(display.innerText, result)
     }
 }
 
@@ -181,9 +204,10 @@ function processResult () {
         processNegative(displayString)
     } else {
         let result = operate(displayString[0], displayString[1], displayString[2])
-        displayResult(result)
+        displayResult(display.innerText, result)
     }
 }
+
 
 function operate (num1, operator, num2) {
     if (operator == '/' && num1 == 0 || operator == '/' && num2 == 0) {
