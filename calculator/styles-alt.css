@@ -12,7 +12,7 @@ main {
     height: 22rem;
     padding: 1rem;
     padding-bottom: 0px; /*prevents white background from bleeding through between content and border*/
-    background-color: #ffecd6;
+    background-color: #e0f3ff;
     border-right: 6px solid black;
     border-bottom: 6px solid black;
     overflow: scroll;
@@ -45,7 +45,7 @@ main {
 
 #notepad span {
     cursor: default;
-    background: bisque;
+    background: #cbe0ff;
     border-radius: 5px;
     border: 1px solid transparent;
     margin: 0.1rem;
@@ -57,13 +57,13 @@ main {
 
 #calc {
     text-align: center;
-    background: grey;
+    background: #7985ad;
     width: 18rem;
     height: 25rem;
     padding:1em;
     box-sizing: border-box;
     border-radius: 1em;
-    box-shadow: 6px 7px 1px black, inset -6px -7px 3px 0px #686868, inset 2px 3px 1px #bfbfbf;
+    box-shadow: 6px 7px 1px black, inset -6px -7px 3px 0px #686090, inset 2px 3px 1px #9ab4bf;
     font-family: Arial, Helvetica, sans-serif;
     display: flex;
     flex-direction: column;
@@ -76,14 +76,16 @@ button {
     width: 3rem;
     margin: 0.25rem 0.5rem;
     font-size: 1.5em;
+    background-color: #e0f3ff;
+    color: #1f465d;
     border-radius: 20%;
     border: 0px solid transparent;
-    box-shadow: inset -2px -2px 0px 0px black, 2px 1px 7px 0px #616161;
+    box-shadow: inset -2px -2px 0px 0px black, 2px 1px 7px 0px #6b618e;
     /* first gives crisp dark button inset, second a little spread */
 }
 
 #calc button:active {
-    background-color: lightgrey;
+    background-color: #b2c0db;
     box-shadow: inset 2px 2px black, inset -1px -1px 0px #656565;
 }
 
@@ -93,7 +95,7 @@ button {
 
 #display {
     font-size: 2em;
-    background-color: black;
+    background-color: #1f465d;
     color: white;
 /*    display: block;
     width: 210px;*/

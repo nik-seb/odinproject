@@ -122,10 +122,14 @@ document.addEventListener('keydown', (e) => {
 
 function populateDisplay (val) {
     display.innerText += val
+    display.scrollLeft = display.scrollWidth-display.offsetWidth
+        // autoscrolls so the most recently entered numbers are displayed and earlier numbers scroll offscreen
 }
 
 function displayResult (string, result) {
     display.innerText = result
+    display.scrollLeft = 0
+        // resets scroll so long numbers display appropriately
 
     const newLine = document.createElement('p')
     const stringConcat = string + " = " + result
