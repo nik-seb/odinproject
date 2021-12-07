@@ -62,6 +62,11 @@ function receiveOps (op) {
         // if there is already a functional operator and the last entered character is a digit, calculate displayed operation and then append the operator to displayed result
         processResult()
         populateDisplay(op)
+    } else if (op!= '-' && reg.test(display.innerText[display.innerText.length-1])) {
+        // if the new operator isn't '-' and the most recently entered character is another operator
+        display.innerText = display.innerText.slice(0, -1) + op
+        console.log(display.innerText)
+        //replaces existing operator with new op
     } else {
         // just add the operator to the display
         populateDisplay(op)
