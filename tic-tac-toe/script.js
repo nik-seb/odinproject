@@ -1,6 +1,3 @@
-   // TO-DO: move winner announcement up so it's more visible
-            // make "Current Player" heading change appropriately as soon as new name is submitted
-            // make Player.score functional -- keep running tally below player names?
 
 
 const gameboard = (function(){
@@ -30,6 +27,8 @@ const gameboard = (function(){
         const submitBtns = document.querySelectorAll('input[type="submit"]')
         const xTitle = document.getElementById('x-title')
         const oTitle = document.getElementById('o-title')
+        const xWinMark = document.getElementById('x-win-mark')
+        const oWinMark = document.getElementById('o-win-mark')
         submitBtns.forEach((btn) => {
             btn.addEventListener('click', (e) => {
             e.preventDefault()
@@ -39,12 +38,20 @@ const gameboard = (function(){
             }
             playerX.name = xName
             xTitle.innerText = xName
+            xWinMark.innerText = xName
             let oName = document.getElementById('play2').value
             if (oName === '' || !oName) {
                 oName = playerO.name
             }
             playerO.name = oName
             oTitle.innerText = oName
+            oWinMark.innerText = oName
+            const turnMarker = document.querySelector('.turn-marker')
+            if (turnMarker.id === 'x-mark') {
+                turnMarker.innerText = xName
+            } else {
+                turnMarker.innerText = oName
+            }
         })
         })
     }
@@ -86,6 +93,8 @@ const gamePlay = (function(){
             if (checkForWin(xMoves)) {
                 announceWin(playerX.name) // link into player names
                 removeClicker()
+                playerX.score++
+                document.getElementById('x-wins').innerText = playerX.score
             }
             playerMarker.id = 'o-mark'
             playerMarker.innerText = playerO.name
@@ -96,6 +105,9 @@ const gamePlay = (function(){
             if (checkForWin(oMoves)) {
                 announceWin(playerO.name)
                 removeClicker()
+                playerO.score++
+                console.log(playerO.score)
+                document.getElementById('o-wins').innerText = playerO.score
             }
             playerMarker.id = 'x-mark'
             playerMarker.innerText = playerX.name
