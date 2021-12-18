@@ -13,7 +13,6 @@ const gameboard = (function(){
                 boardArray.push(newSquare)
             }
         }
-        console.log(boardArray)
     }
 
     function setupCells () {
@@ -59,7 +58,6 @@ const gameboard = (function(){
     return (populateArray(rows, cols), boardArray, setupCells(), setNames()) //do need to run populateArray before returning boardArray or is not filled
 })()
 
-// console.log(gameboard.boardArray) // this doesn't work and I don't understand why
 
 const gamePlay = (function(){
     const board = document.getElementById('board')
@@ -71,7 +69,6 @@ const gamePlay = (function(){
         let oMoves = []
     
     const placeMark = function () {
-        console.log('placemark has begun', tally, xMoves)
         cells.forEach((cell) => {
             cell.addEventListener('click', cellClicker)
         })
@@ -79,17 +76,14 @@ const gamePlay = (function(){
 
     const cellClicker = function (e){
         const cell = e.target
-        console.log('event triggered', tally, xMoves)
         if (cell.innerText) {
             return // prevents any action from occurring if cell is already filled
         }
         const thisCell = cell.id
         let thisPlayer = ''
-        console.log('placemark is running', tally, xMoves)
         if (playerMarker.id === 'x-mark') {
             thisPlayer = 'X'
             xMoves.push(thisCell)
-            console.log('placemark is running', tally, xMoves)
             if (checkForWin(xMoves)) {
                 announceWin(playerX.name) // link into player names
                 removeClicker()
@@ -101,12 +95,10 @@ const gamePlay = (function(){
         } else if (playerMarker.id === 'o-mark') {
             thisPlayer = 'O'
             oMoves.push(thisCell)
-            console.log('placemark is running', tally, xMoves)
             if (checkForWin(oMoves)) {
                 announceWin(playerO.name)
                 removeClicker()
                 playerO.score++
-                console.log(playerO.score)
                 document.getElementById('o-wins').innerText = playerO.score
             }
             playerMarker.id = 'x-mark'
@@ -114,16 +106,14 @@ const gamePlay = (function(){
         }
         cell.innerText = thisPlayer
         tally++
-        console.log('end of placemark event', tally, xMoves)
-        console.log('placing from player: ' + thisPlayer + ' in ' + thisCell)
-        if (tally === 9) {
+        //if board is full and there is no winner declaration
+        if (tally === 9 && !document.getElementById('winner')) {
             announceWin('Tie')
             removeClicker()
         }
         function removeClicker() {
             cells.forEach((cell) => {
                 cell.removeEventListener('click', cellClicker)
-                console.log('removed! ', cell)
             })
         }
     }
@@ -143,7 +133,6 @@ const gamePlay = (function(){
     }
 
     const checkForWin = function (moves) {
-        console.log(moves)
         //can receive xMoves or oMoves
         //checks diagonals
         if (moves.indexOf('a1') != -1 && moves.indexOf('b2') != -1 && moves.indexOf('c3') != -1) {
@@ -151,8 +140,8 @@ const gamePlay = (function(){
         } else if (moves.indexOf('c1') != -1 && moves.indexOf('b2') != -1 && moves.indexOf('a3') != -1) {
             return true
         }
+        // gets row and column of each existing move and increments the corresponding value in tallies
         let tallies = {a: 0, b: 0, c: 0, 1: 0, 2: 0, 3: 0}
-        console.log(tallies)
         for (let i in moves) {
             let row = moves[i][0]
             let col = moves[i][1]
@@ -162,7 +151,6 @@ const gamePlay = (function(){
         let talliesArr = Object.entries(tallies)
         for (let i = 0; i < talliesArr.length; i++) {
             if (talliesArr[i][1] === 3) {
-                console.log('true!')
                 return true
             }
         }
