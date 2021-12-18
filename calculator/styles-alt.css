@@ -13,8 +13,7 @@ main {
     padding: 1rem;
     padding-bottom: 0px; /*prevents white background from bleeding through between content and border*/
     background-color: #e0f3ff;
-    border-right: 6px solid black;
-    border-bottom: 6px solid black;
+    box-shadow: 2px 2px 2px #5d6f8d;
     overflow: scroll;
 }
 
@@ -63,7 +62,7 @@ main {
     padding:1em;
     box-sizing: border-box;
     border-radius: 1em;
-    box-shadow: 6px 7px 1px black, inset -6px -7px 3px 0px #686090, inset 2px 3px 1px #9ab4bf;
+    box-shadow: 5px 5px 1px #443c69, inset -2px -3px 3px 0px #686090, inset 2px 3px 1px #9ab4bf;
     font-family: Arial, Helvetica, sans-serif;
     display: flex;
     flex-direction: column;
