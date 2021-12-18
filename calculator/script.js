@@ -17,7 +17,6 @@ const regActiveOp = /((?<=\d)[x\/\+\-])/
 
 buttons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
-        console.log(btn.innerText + ' on display')
     })
 })
 
@@ -65,7 +64,6 @@ function receiveOps (op) {
     } else if (op!= '-' && reg.test(display.innerText[display.innerText.length-1])) {
         // if the new operator isn't '-' and the most recently entered character is another operator
         display.innerText = display.innerText.slice(0, -1) + op
-        console.log(display.innerText)
         //replaces existing operator with new op
     } else {
         // just add the operator to the display
@@ -92,13 +90,11 @@ back.addEventListener('click', (e) => {
 
 function goBack () {
     let newDisplay = display.innerText.slice(0, -1)
-    console.log(newDisplay)
     display.innerText = newDisplay
 }
 
 document.addEventListener('keydown', (e) => {
     e.preventDefault()
-    console.log(e.key + ' on keyboard')
     if (/\d/.test (e.key)) {
         receiveDigits(e.key)
     }
@@ -120,7 +116,6 @@ document.addEventListener('keydown', (e) => {
         goBack()
     }
     if (e.key === 'c') {
-        console.log('a c')
         display.innerHTML = ''
     } //clears
 })
@@ -152,13 +147,10 @@ function displayResult (string, result) {
 }
 
 function markNotepad (string) {
-    let newReg = /((?<=\d)[x\/\+\-])|(\=)/ // regActiveOp + '='
-    console.log(string)
+    let newReg = /((?<=\d)[x\/\+\-])|(\=)/ // regActiveOp or '='
     let newString = string.split(newReg)
-    console.log(newString)
     newString = newString.map((item) => {
         if (/\d/.test(item)) {
-            console.log(item)
             return '<span> ' + item + ' </span>'
         } else {
             return item
@@ -166,38 +158,30 @@ function markNotepad (string) {
     })
     newString = newString.join(' ')
 
-    console.log(newString)
     return newString
 }
 
 function addNotepadListeners (line) {
-    console.log(line)
     const spans = line.querySelectorAll('span')
     spans.forEach(span => {
-        console.log('a span', span)
         span.addEventListener('click', e => appendNumber(span.innerText))
     })
 }
 
 function appendNumber (num) {
-    console.log(num)
     display.innerText += num
 }
 
 function removeLine (target) {
     const line = target.parentElement
-    console.log(line)
     line.remove()
 }
 
 function processNegative(predisplayString) {
     // split(reg) will split negatives as follows: neg[0], dig[1], op[2], dig[3] OR neg[0], dig [1], op[2], neg[3], dig[4] OR dig[0], op[1], neg[2], dig[3]
-    console.log(predisplayString[0])
     let displayString = predisplayString.map((string, index) => {
-        console.log(predisplayString[index])
             //if "-" is not preceded by a digit (and therefore is a neg and not an operator)
         if (string === '-' && !/\d/.test(predisplayString[index-1])) {
-            console.log(string)
             return `${string}${predisplayString[index+1]}`
         } else if (/\d/.test(string) && predisplayString[index-1] === '-' && !/\d/.test(predisplayString[index-2])) {
             // if preceded by "-" and no other digit and therefore already included in neg number combo
@@ -207,7 +191,6 @@ function processNegative(predisplayString) {
             return string
         }
     })
-    console.log(displayString)
     // push non-empty items into result array, validate format, and display result
     let result = []
     for (let string in displayString) {
@@ -220,7 +203,6 @@ function processNegative(predisplayString) {
         console.log(result.length, result)
     } else {
         result = operate(result[0], result[1], result[2])
-        console.log('operating on negative')
         displayResult(display.innerText, result)
     }
 }
@@ -243,7 +225,6 @@ function operate (num1, operator, num2) {
     }
 
     if (operator == '+') {
-        console.log('adding', num1, operator, num2)
         return add(+num1, +num2)
     }
     if (operator == '-') {
@@ -258,8 +239,7 @@ function operate (num1, operator, num2) {
 }
 
 function truncate (num) {
-    console.log(num)
-    return Math.round(num * 10000) / 10000
+    return Math.round(num * 100000) / 100000
 }
 
 function add (a, b) {
@@ -281,4 +261,3 @@ function divide (a, b) {
 
 
 
-console.log(multiply(5, 3), add (1, 3), subtract (5, 3), divide (10, 2))
