@@ -55,7 +55,22 @@ const gameboard = (function(){
         })
     }
 
-    return (populateArray(rows, cols), boardArray, setupCells(), setNames()) //do need to run populateArray before returning boardArray or is not filled
+    function setComputerPlay () {
+        const compPlay = document.getElementById('comp-play')
+        const oTitle = document.getElementById('o-title')
+        const oWinMark = document.getElementById('o-win-mark')
+        compPlay.addEventListener('click', e => {
+            e.preventDefault()
+            let oName = 'Computer'
+            playerO.name = oName
+            oTitle.innerText = oName
+            oWinMark.innerText = oName
+            // left out turnMarker lines from the setNames function; keep eye open for anything weird
+        console.log(playerO.name)
+        })
+    }
+
+    return (populateArray(rows, cols), boardArray, setupCells(), setNames(), setComputerPlay()) //do need to run populateArray before returning boardArray or is not filled
 })()
 
 
@@ -92,6 +107,11 @@ const gamePlay = (function(){
             }
             playerMarker.id = 'o-mark'
             playerMarker.innerText = playerO.name
+            cell.innerText = thisPlayer
+            tally++
+            if (playerO.name === 'Computer' && tally != 9 && !checkForWin(xMoves)) {
+                compMoves()
+            }
         } else if (playerMarker.id === 'o-mark') {
             thisPlayer = 'O'
             oMoves.push(thisCell)
@@ -103,20 +123,48 @@ const gamePlay = (function(){
             }
             playerMarker.id = 'x-mark'
             playerMarker.innerText = playerX.name
+            cell.innerText = thisPlayer
+            tally++
         }
-        cell.innerText = thisPlayer
-        tally++
         //if board is full and there is no winner declaration
         if (tally === 9 && !document.getElementById('winner')) {
             announceWin('Tie')
             removeClicker()
         }
-        function removeClicker() {
-            cells.forEach((cell) => {
-                cell.removeEventListener('click', cellClicker)
-            })
-        }
     }
+
+    //prevent empty cells from being clicked after game is won
+    function removeClicker() {
+        cells.forEach((cell) => {
+            cell.removeEventListener('click', cellClicker)
+        })
+    }
+
+    function compMoves () {
+            const cells = document.querySelectorAll('#board td')
+            let validCellIDs = []
+            cells.forEach(element => {
+                if (element.innerText === '') {
+                    validCellIDs.push(element.id)
+                }
+            })
+            let random = Math.floor(Math.random()*validCellIDs.length)
+            let thisCell = document.getElementById(validCellIDs[random])
+            console.log(thisCell)
+            thisPlayer = 'O'
+            thisCell.innerText = thisPlayer
+            oMoves.push(thisCell.id)
+            if (checkForWin(oMoves)) {
+                announceWin(playerO.name)
+                removeClicker()
+                playerO.score++
+                document.getElementById('o-wins').innerText = playerO.score
+            }
+            playerMarker.id = 'x-mark'
+            playerMarker.innerText = playerX.name
+            tally++
+        }
+
 
     const announceWin = function (winner) {
         let announce = ''
@@ -135,6 +183,7 @@ const gamePlay = (function(){
     const checkForWin = function (moves) {
         //can receive xMoves or oMoves
         //checks diagonals
+        console.log(oMoves, xMoves)
         if (moves.indexOf('a1') != -1 && moves.indexOf('b2') != -1 && moves.indexOf('c3') != -1) {
             return true
         } else if (moves.indexOf('c1') != -1 && moves.indexOf('b2') != -1 && moves.indexOf('a3') != -1) {
@@ -169,6 +218,9 @@ const gamePlay = (function(){
                 board.removeChild(document.getElementById('winner'))
             }
             placeMark()
+            if (document.getElementById('o-mark') && playerO.name === 'Computer') {
+                compMoves()
+            }
         })
     }
     return (placeMark(), clearBoard())

@@ -19,6 +19,7 @@ Projects completed for the Odin Project Foundations and Fullstack Javascript cur
 ## Tic-Tac-Toe
 
 * automatically identifies wins and ties
+* can play against the computer (will make random legal moves)
 * tallies results from multiple rounds
 * customizable player names
 
