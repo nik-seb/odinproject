@@ -184,12 +184,59 @@ const gamePlay = (function(){
         //can receive xMoves or oMoves
         //checks diagonals
         console.log(oMoves, xMoves)
-        if (moves.indexOf('a1') != -1 && moves.indexOf('b2') != -1 && moves.indexOf('c3') != -1) {
-            return true
-        } else if (moves.indexOf('c1') != -1 && moves.indexOf('b2') != -1 && moves.indexOf('a3') != -1) {
+        let talliesDiag = tallyDiag(moves)
+        if (talliesDiag.t1 === 3 || talliesDiag.t2 === 3) {
             return true
         }
-        // gets row and column of each existing move and increments the corresponding value in tallies
+        //checks rows and columns
+        let talliesArr = tallyMoves(moves)
+        for (let i = 0; i < talliesArr.length; i++) {
+            if (talliesArr[i][1] === 3) {
+                return true
+            }
+        }
+    }
+
+    function checkNearWin (moves) {
+        //receive xMoves or oMoves
+        let diagonal = tallyDiag(moves)
+        if (diagonal.t1 === 2) {
+            return t1
+        } else if (diagonal.t2 === 2) {
+            return t2
+        }
+        let rowCol = tallyMoves(moves)
+        for (let i = 0; i < rowCol.length; i++) {
+            if (rowCol[i][1] === 2) {
+                return rowCol[i]
+            }
+        }
+    }
+
+    function tallyDiag (moves) {
+        // t1 covers diagonal: a1, b2, c3; t2 covers diagonal c1, b2, a3
+        let tallies = {t1: 0, t2: 0}
+        if (moves.indexOf('a1') != -1) {
+            tallies.t1++
+        }
+        if (moves.indexOf('b2') != -1) {
+            tallies.t1++
+            tallies.t2++
+        }
+        if (moves.indexOf('c3') != -1) {
+            tallies.t1++
+        }
+        if (moves.indexOf('c1') != -1) {
+            tallies.t2++
+        }
+        if (moves.indexOf('a3') != -1) {
+            tallies.t2++
+        }
+        return tallies
+    }
+
+    function tallyMoves (moves) {
+                // gets row and column of each existing move and increments the corresponding value in tallies
         let tallies = {a: 0, b: 0, c: 0, 1: 0, 2: 0, 3: 0}
         for (let i in moves) {
             let row = moves[i][0]
@@ -197,12 +244,7 @@ const gamePlay = (function(){
             tallies[row]++
             tallies[col]++
         }
-        let talliesArr = Object.entries(tallies)
-        for (let i = 0; i < talliesArr.length; i++) {
-            if (talliesArr[i][1] === 3) {
-                return true
-            }
-        }
+        return Object.entries(tallies)
     }
 
     function clearBoard () {
