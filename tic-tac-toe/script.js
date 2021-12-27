@@ -1,4 +1,6 @@
-
+//STATUS: computer makes correct moves early on to block a near-win or complete 3-in-a-row, but
+//  when multiple near-wins fill the board, it can return false and randomize
+//  even when there are valid moves to block a near-win
 
 const gameboard = (function(){
     const cells = document.querySelectorAll('td')
@@ -75,6 +77,7 @@ const gameboard = (function(){
 
 
 const gamePlay = (function(){
+    "use strict"
     const board = document.getElementById('board')
     const cells = document.querySelectorAll('td')
     const playerMarker = document.querySelector('.turn-marker')
@@ -82,6 +85,7 @@ const gamePlay = (function(){
         let tally = 0
         let xMoves = []
         let oMoves = []
+        let thisPlayer = ''
     
     const placeMark = function () {
         cells.forEach((cell) => {
@@ -95,7 +99,7 @@ const gamePlay = (function(){
             return // prevents any action from occurring if cell is already filled
         }
         const thisCell = cell.id
-        let thisPlayer = ''
+        thisPlayer = ''
         if (playerMarker.id === 'x-mark') {
             thisPlayer = 'X'
             xMoves.push(thisCell)
@@ -148,9 +152,10 @@ const gamePlay = (function(){
                     validCellIDs.push(element.id)
                 }
             })
-            let random = Math.floor(Math.random()*validCellIDs.length)
-            let thisCell = document.getElementById(validCellIDs[random])
-            console.log(thisCell)
+            console.log(validCellIDs)
+            let thisCell = chooseMove(validCellIDs)
+            console.log('the chosen cell is: ', thisCell)
+            thisCell = document.getElementById(thisCell)
             thisPlayer = 'O'
             thisCell.innerText = thisPlayer
             oMoves.push(thisCell.id)
@@ -164,6 +169,77 @@ const gamePlay = (function(){
             playerMarker.innerText = playerX.name
             tally++
         }
+
+    function chooseMove (valid) {
+        const oNearWin = checkNearWin(oMoves)
+        const xNearWin = checkNearWin(xMoves)
+        console.log(`onearwin is ${oNearWin} and xNearWin is ${xNearWin}`)
+        if (oNearWin === false && xNearWin === false) {
+            console.log('no near win!')
+            return randomize()
+        }
+        // check oNearWin first to get an immediate win if possible, then xNearWin to block
+        console.log('checking oNearWin')
+        if (oNearWin != false) {
+            let oCheck = checks(oNearWin)
+            console.log('oCheck = ', oCheck)
+            if (oCheck != false) {
+                return oCheck
+            }
+        }
+        console.log('checking xNearWin')
+
+        if (xNearWin != false) {
+            let xCheck = checks(xNearWin)
+            console.log('xCheck = ', xCheck)
+            if (xCheck != false) {
+                return xCheck
+            }
+        }
+
+        console.log('no valid near-win moves')
+        return randomize()
+
+        function randomize () {
+            let random = Math.floor(Math.random()*valid.length)
+            return valid[random]
+        }
+
+        function checks (nearWin) {
+            if (nearWin === 't1') {
+                let diag = ['a1', 'b2', 'c3']
+                for (let cell of diag) {
+                    console.log(cell, diag, valid, valid.includes(cell))
+                    if (valid.includes(cell)) {
+                        return cell
+                    }
+                }
+            } else if (nearWin === 't2') {
+                let diag = ['c1', 'b2', 'a3']
+                for (let cell of diag) {
+                    console.log(cell, diag, valid, valid.includes(cell))
+                    if (valid.includes(cell)) {
+                        return cell
+                    }
+                }
+            } else {
+                console.log('checking parts of nearWin: ', nearWin[0], nearWin[1])
+                for (let cell of valid) {
+                    console.log('checking parts of valid cell: ', cell[0], cell[1])
+                    if (cell[0] === nearWin[0]) {
+                        console.log(cell)
+                        return cell
+                    }
+                    if (cell[1] === nearWin[0]) {
+                        console.log(cell)
+                        return cell
+                    }
+                }
+            }
+            return false
+        }
+
+    }
 
 
     const announceWin = function (winner) {
@@ -183,7 +259,7 @@ const gamePlay = (function(){
     const checkForWin = function (moves) {
         //can receive xMoves or oMoves
         //checks diagonals
-        console.log(oMoves, xMoves)
+        console.log('checkForWin: oMoves and xMoves: ', oMoves, xMoves)
         let talliesDiag = tallyDiag(moves)
         if (talliesDiag.t1 === 3 || talliesDiag.t2 === 3) {
             return true
@@ -201,16 +277,18 @@ const gamePlay = (function(){
         //receive xMoves or oMoves
         let diagonal = tallyDiag(moves)
         if (diagonal.t1 === 2) {
-            return t1
+            return 't1'
         } else if (diagonal.t2 === 2) {
-            return t2
+            return 't2'
         }
         let rowCol = tallyMoves(moves)
         for (let i = 0; i < rowCol.length; i++) {
             if (rowCol[i][1] === 2) {
+                console.log(`checkNearWin: rowCol[i] from tallyMoves is ${rowCol[i]}`)
                 return rowCol[i]
             }
         }
+        return false
     }
 
     function tallyDiag (moves) {
