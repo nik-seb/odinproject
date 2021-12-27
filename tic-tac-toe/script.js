@@ -1,6 +1,3 @@
-//STATUS: computer makes correct moves early on to block a near-win or complete 3-in-a-row, but
-//  when multiple near-wins fill the board, it can return false and randomize
-//  even when there are valid moves to block a near-win
 
 const gameboard = (function(){
     const cells = document.querySelectorAll('td')
@@ -206,7 +203,7 @@ const gamePlay = (function(){
         }
 
         function checks (nearWin) {
-            if (nearWin === 't1') {
+            if (nearWin.includes('tx')) {
                 let diag = ['a1', 'b2', 'c3']
                 for (let cell of diag) {
                     console.log(cell, diag, valid, valid.includes(cell))
@@ -214,7 +211,8 @@ const gamePlay = (function(){
                         return cell
                     }
                 }
-            } else if (nearWin === 't2') {
+            }
+            if (nearWin.includes('tz')) {
                 let diag = ['c1', 'b2', 'a3']
                 for (let cell of diag) {
                     console.log(cell, diag, valid, valid.includes(cell))
@@ -222,20 +220,24 @@ const gamePlay = (function(){
                         return cell
                     }
                 }
-            } else {
-                console.log('checking parts of nearWin: ', nearWin[0], nearWin[1])
+            }
+
+            console.log('checking parts of nearWin: ', nearWin[0], nearWin[1])
+            for (let i = 0; i < nearWin.length; i++) {
                 for (let cell of valid) {
                     console.log('checking parts of valid cell: ', cell[0], cell[1])
-                    if (cell[0] === nearWin[0]) {
+                    if (cell[0] === nearWin[i][0]) {
                         console.log(cell)
                         return cell
                     }
-                    if (cell[1] === nearWin[0]) {
+                    if (cell[1] === nearWin[i][0]) {
                         console.log(cell)
                         return cell
                     }
                 }
             }
+
+            
             return false
         }
 
@@ -261,7 +263,7 @@ const gamePlay = (function(){
         //checks diagonals
         console.log('checkForWin: oMoves and xMoves: ', oMoves, xMoves)
         let talliesDiag = tallyDiag(moves)
-        if (talliesDiag.t1 === 3 || talliesDiag.t2 === 3) {
+        if (talliesDiag.tx === 3 || talliesDiag.tz === 3) {
             return true
         }
         //checks rows and columns
@@ -275,40 +277,45 @@ const gamePlay = (function(){
 
     function checkNearWin (moves) {
         //receive xMoves or oMoves
+        let nearWinTally = []
         let diagonal = tallyDiag(moves)
-        if (diagonal.t1 === 2) {
-            return 't1'
-        } else if (diagonal.t2 === 2) {
-            return 't2'
+        if (diagonal.tx === 2) {
+            nearWinTally.push('tx')
+        } else if (diagonal.tz === 2) {
+            nearWinTally.push('tz')
         }
         let rowCol = tallyMoves(moves)
         for (let i = 0; i < rowCol.length; i++) {
             if (rowCol[i][1] === 2) {
                 console.log(`checkNearWin: rowCol[i] from tallyMoves is ${rowCol[i]}`)
-                return rowCol[i]
+                nearWinTally.push(rowCol[i])
             }
+        }
+        if (nearWinTally.length > 0) {
+            return nearWinTally
         }
         return false
     }
 
     function tallyDiag (moves) {
         // t1 covers diagonal: a1, b2, c3; t2 covers diagonal c1, b2, a3
-        let tallies = {t1: 0, t2: 0}
+        // changing t1 to tx and t2 to tz so I can evaluate alongside regular cells
+        let tallies = {tx: 0, tz: 0}
         if (moves.indexOf('a1') != -1) {
-            tallies.t1++
+            tallies.tx++
         }
         if (moves.indexOf('b2') != -1) {
-            tallies.t1++
-            tallies.t2++
+            tallies.tx++
+            tallies.tz++
         }
         if (moves.indexOf('c3') != -1) {
-            tallies.t1++
+            tallies.tx++
         }
         if (moves.indexOf('c1') != -1) {
-            tallies.t2++
+            tallies.tz++
         }
         if (moves.indexOf('a3') != -1) {
-            tallies.t2++
+            tallies.tz++
         }
         return tallies
     }
