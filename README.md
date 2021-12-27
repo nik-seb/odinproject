@@ -4,6 +4,15 @@ Projects completed for the Odin Project Foundations and Fullstack Javascript cur
 
 # Highlights:
 
+## Tic-Tac-Toe
+
+* automatically identifies wins and ties
+* can play against the computer, which will respond to near-wins and block or complete 3-in-a-row
+* tallies results from multiple rounds
+* customizable player names
+
+[assignment](https://www.theodinproject.com/paths/full-stack-javascript/courses/javascript/lessons/tic-tac-toe)
+
 ## Calculator
 
 * keyboard and mouse input
@@ -14,16 +23,6 @@ Projects completed for the Odin Project Foundations and Fullstack Javascript cur
 * calculator display automatically scrolls for long numbers to see recent input
 
 [assignment](https://www.theodinproject.com/paths/foundations/courses/foundations/lessons/calculator)
-
-
-## Tic-Tac-Toe
-
-* automatically identifies wins and ties
-* can play against the computer (will make random legal moves)
-* tallies results from multiple rounds
-* customizable player names
-
-[assignment](https://www.theodinproject.com/paths/full-stack-javascript/courses/javascript/lessons/tic-tac-toe)
 
 
 # Older Projects
