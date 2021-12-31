@@ -1,5 +1,4 @@
 
-
 const gameboard = (function(){
     const cells = document.querySelectorAll('td')
     const rows = ['a', 'b', 'c']
@@ -55,11 +54,27 @@ const gameboard = (function(){
         })
     }
 
-    return (populateArray(rows, cols), boardArray, setupCells(), setNames()) //do need to run populateArray before returning boardArray or is not filled
+    function setComputerPlay () {
+        const compPlay = document.getElementById('comp-play')
+        const oTitle = document.getElementById('o-title')
+        const oWinMark = document.getElementById('o-win-mark')
+        compPlay.addEventListener('click', e => {
+            e.preventDefault()
+            let oName = 'Computer'
+            playerO.name = oName
+            oTitle.innerText = oName
+            oWinMark.innerText = oName
+            // left out turnMarker lines from the setNames function; keep eye open for anything weird
+        console.log(playerO.name)
+        })
+    }
+
+    return (populateArray(rows, cols), boardArray, setupCells(), setNames(), setComputerPlay()) //do need to run populateArray before returning boardArray or is not filled
 })()
 
 
 const gamePlay = (function(){
+    "use strict"
     const board = document.getElementById('board')
     const cells = document.querySelectorAll('td')
     const playerMarker = document.querySelector('.turn-marker')
@@ -67,6 +82,7 @@ const gamePlay = (function(){
         let tally = 0
         let xMoves = []
         let oMoves = []
+        let thisPlayer = ''
     
     const placeMark = function () {
         cells.forEach((cell) => {
@@ -80,7 +96,7 @@ const gamePlay = (function(){
             return // prevents any action from occurring if cell is already filled
         }
         const thisCell = cell.id
-        let thisPlayer = ''
+        thisPlayer = ''
         if (playerMarker.id === 'x-mark') {
             thisPlayer = 'X'
             xMoves.push(thisCell)
@@ -92,6 +108,11 @@ const gamePlay = (function(){
             }
             playerMarker.id = 'o-mark'
             playerMarker.innerText = playerO.name
+            cell.innerText = thisPlayer
+            tally++
+            if (playerO.name === 'Computer' && tally != 9 && !checkForWin(xMoves)) {
+                compMoves()
+            }
         } else if (playerMarker.id === 'o-mark') {
             thisPlayer = 'O'
             oMoves.push(thisCell)
@@ -103,20 +124,125 @@ const gamePlay = (function(){
             }
             playerMarker.id = 'x-mark'
             playerMarker.innerText = playerX.name
+            cell.innerText = thisPlayer
+            tally++
         }
-        cell.innerText = thisPlayer
-        tally++
         //if board is full and there is no winner declaration
         if (tally === 9 && !document.getElementById('winner')) {
             announceWin('Tie')
             removeClicker()
         }
-        function removeClicker() {
-            cells.forEach((cell) => {
-                cell.removeEventListener('click', cellClicker)
-            })
-        }
     }
+
+    //prevent empty cells from being clicked after game is won
+    function removeClicker() {
+        cells.forEach((cell) => {
+            cell.removeEventListener('click', cellClicker)
+        })
+    }
+
+    function compMoves () {
+            const cells = document.querySelectorAll('#board td')
+            let validCellIDs = []
+            cells.forEach(element => {
+                if (element.innerText === '') {
+                    validCellIDs.push(element.id)
+                }
+            })
+            console.log(validCellIDs)
+            let thisCell = chooseMove(validCellIDs)
+            console.log('the chosen cell is: ', thisCell)
+            thisCell = document.getElementById(thisCell)
+            thisPlayer = 'O'
+            thisCell.innerText = thisPlayer
+            oMoves.push(thisCell.id)
+            if (checkForWin(oMoves)) {
+                announceWin(playerO.name)
+                removeClicker()
+                playerO.score++
+                document.getElementById('o-wins').innerText = playerO.score
+            }
+            playerMarker.id = 'x-mark'
+            playerMarker.innerText = playerX.name
+            tally++
+        }
+
+    function chooseMove (valid) {
+        const oNearWin = checkNearWin(oMoves)
+        const xNearWin = checkNearWin(xMoves)
+        console.log(`onearwin is ${oNearWin} and xNearWin is ${xNearWin}`)
+        if (oNearWin === false && xNearWin === false) {
+            console.log('no near win!')
+            return randomize()
+        }
+        // check oNearWin first to get an immediate win if possible, then xNearWin to block
+        console.log('checking oNearWin')
+        if (oNearWin != false) {
+            let oCheck = checks(oNearWin)
+            console.log('oCheck = ', oCheck)
+            if (oCheck != false) {
+                return oCheck
+            }
+        }
+        console.log('checking xNearWin')
+
+        if (xNearWin != false) {
+            let xCheck = checks(xNearWin)
+            console.log('xCheck = ', xCheck)
+            if (xCheck != false) {
+                return xCheck
+            }
+        }
+
+        console.log('no valid near-win moves')
+        return randomize()
+
+        function randomize () {
+            let random = Math.floor(Math.random()*valid.length)
+            return valid[random]
+        }
+
+        function checks (nearWin) {
+            if (nearWin.includes('tx')) {
+                let diag = ['a1', 'b2', 'c3']
+                for (let cell of diag) {
+                    console.log(cell, diag, valid, valid.includes(cell))
+                    if (valid.includes(cell)) {
+                        return cell
+                    }
+                }
+            }
+            if (nearWin.includes('tz')) {
+                let diag = ['c1', 'b2', 'a3']
+                for (let cell of diag) {
+                    console.log(cell, diag, valid, valid.includes(cell))
+                    if (valid.includes(cell)) {
+                        return cell
+                    }
+                }
+            }
+
+            console.log('checking parts of nearWin: ', nearWin[0], nearWin[1])
+            for (let i = 0; i < nearWin.length; i++) {
+                for (let cell of valid) {
+                    console.log('checking parts of valid cell: ', cell[0], cell[1])
+                    if (cell[0] === nearWin[i][0]) {
+                        console.log(cell)
+                        return cell
+                    }
+                    if (cell[1] === nearWin[i][0]) {
+                        console.log(cell)
+                        return cell
+                    }
+                }
+            }
+
+            
+            return false
+        }
+
+    }
+
 
     const announceWin = function (winner) {
         let announce = ''
@@ -135,12 +261,67 @@ const gamePlay = (function(){
     const checkForWin = function (moves) {
         //can receive xMoves or oMoves
         //checks diagonals
-        if (moves.indexOf('a1') != -1 && moves.indexOf('b2') != -1 && moves.indexOf('c3') != -1) {
-            return true
-        } else if (moves.indexOf('c1') != -1 && moves.indexOf('b2') != -1 && moves.indexOf('a3') != -1) {
+        console.log('checkForWin: oMoves and xMoves: ', oMoves, xMoves)
+        let talliesDiag = tallyDiag(moves)
+        if (talliesDiag.tx === 3 || talliesDiag.tz === 3) {
             return true
         }
-        // gets row and column of each existing move and increments the corresponding value in tallies
+        //checks rows and columns
+        let talliesArr = tallyMoves(moves)
+        for (let i = 0; i < talliesArr.length; i++) {
+            if (talliesArr[i][1] === 3) {
+                return true
+            }
+        }
+    }
+
+    function checkNearWin (moves) {
+        //receive xMoves or oMoves
+        let nearWinTally = []
+        let diagonal = tallyDiag(moves)
+        if (diagonal.tx === 2) {
+            nearWinTally.push('tx')
+        } else if (diagonal.tz === 2) {
+            nearWinTally.push('tz')
+        }
+        let rowCol = tallyMoves(moves)
+        for (let i = 0; i < rowCol.length; i++) {
+            if (rowCol[i][1] === 2) {
+                console.log(`checkNearWin: rowCol[i] from tallyMoves is ${rowCol[i]}`)
+                nearWinTally.push(rowCol[i])
+            }
+        }
+        if (nearWinTally.length > 0) {
+            return nearWinTally
+        }
+        return false
+    }
+
+    function tallyDiag (moves) {
+        // t1 covers diagonal: a1, b2, c3; t2 covers diagonal c1, b2, a3
+        // changing t1 to tx and t2 to tz so I can evaluate alongside regular cells
+        let tallies = {tx: 0, tz: 0}
+        if (moves.indexOf('a1') != -1) {
+            tallies.tx++
+        }
+        if (moves.indexOf('b2') != -1) {
+            tallies.tx++
+            tallies.tz++
+        }
+        if (moves.indexOf('c3') != -1) {
+            tallies.tx++
+        }
+        if (moves.indexOf('c1') != -1) {
+            tallies.tz++
+        }
+        if (moves.indexOf('a3') != -1) {
+            tallies.tz++
+        }
+        return tallies
+    }
+
+    function tallyMoves (moves) {
+                // gets row and column of each existing move and increments the corresponding value in tallies
         let tallies = {a: 0, b: 0, c: 0, 1: 0, 2: 0, 3: 0}
         for (let i in moves) {
             let row = moves[i][0]
@@ -148,12 +329,7 @@ const gamePlay = (function(){
             tallies[row]++
             tallies[col]++
         }
-        let talliesArr = Object.entries(tallies)
-        for (let i = 0; i < talliesArr.length; i++) {
-            if (talliesArr[i][1] === 3) {
-                return true
-            }
-        }
+        return Object.entries(tallies)
     }
 
     function clearBoard () {
@@ -169,6 +345,9 @@ const gamePlay = (function(){
                 board.removeChild(document.getElementById('winner'))
             }
             placeMark()
+            if (document.getElementById('o-mark') && playerO.name === 'Computer') {
+                compMoves()
+            }
         })
     }
     return (placeMark(), clearBoard())
