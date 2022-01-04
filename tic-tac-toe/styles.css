@@ -1,19 +1,54 @@
+body {
+    background-color: #a0a0a0;
+    font-family: sans-serif;
+    margin: 0px;
+}
+
 table {
     border-spacing: 0px;
+    background: #323232;
+    color: #d6d6d6;
 }
 
 h1, h2 {
     text-align: center;
 }
 
+h1 {
+    margin-bottom: 0px;
+}
+
+h2 {
+    font-size: 20px;
+    margin: 0.5em;
+}
+
 td {
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     display: inline-block;
-    border: 1px solid black;
+    border: 1px solid white;
     margin: 0px;
     text-align: center;
-    font-size: 45px;
+    font-size: 65px;
+    font-family: sans-serif;
+    line-height: 70px;
+}
+
+td:first-of-type {
+    border-left: 0px;
+}
+
+tr:first-of-type td {
+    border-top: 0px;
+}
+
+tr:last-of-type td {
+    border-bottom: 0px;
+}
+
+td:last-of-type {
+    border-right: 0px;
 }
 
 #board {
@@ -33,6 +68,28 @@ td {
 input {
     margin-top: 5px;
     width: 7em;
+}
+
+button {
+    border: none;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    background-color: white;
+    }
+
+#clear-btn {
+    width: 100%;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #9d471d;
+    color: white;
+}
+
+input[type="submit"] {
+    border: none;
+    padding: 0.25rem;
+    background-color: white;
 }
 
 #scoreboard {
