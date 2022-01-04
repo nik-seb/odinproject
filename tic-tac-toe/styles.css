@@ -56,13 +56,22 @@ td:last-of-type {
 }
 
 #player-info {
+    text-align: right;
+    font-size: 14px;
+}
+
+#player-info, #scoreboard {
     width: 20%;
+    background: #fff;
+    padding: 0.5rem;
+    height: 218px;
+    box-sizing: border-box;
+    font-size: small;
 }
 
 #content-container {
     display: flex;
-    justify-content: space-around;
-    align-items: baseline;
+    justify-content: center;
 }
 
 input {
@@ -74,8 +83,9 @@ button {
     border: none;
     padding: 0.5rem;
     box-sizing: border-box;
-    background-color: white;
-    }
+    background-color: #9d471d;
+    color: white;
+}
 
 #clear-btn {
     width: 100%;
@@ -83,15 +93,12 @@ button {
 
 button:hover, input[type="submit"]:hover {
     background-color: #9d471d;
-    color: white;
+    background-color: black;
 }
 
 input[type="submit"] {
     border: none;
     padding: 0.25rem;
-    background-color: white;
-}
-
-#scoreboard {
-    width: 20%;
+    background-color: #9d471d;
+    color: white;
 }
