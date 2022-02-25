@@ -78,6 +78,7 @@ const gamePlay = (function(){
     const board = document.getElementById('board')
     const cells = document.querySelectorAll('td')
     const playerMarker = document.querySelector('.turn-marker')
+    const headerInfo = document.getElementById("header-info")
 
         let tally = 0
         let xMoves = []
@@ -254,8 +255,7 @@ const gamePlay = (function(){
         let display = document.createElement('div')
         display.id = 'winner'
         display.innerText = announce
-        board.appendChild(display)
-        
+        headerInfo.appendChild(display)
     }
 
     const checkForWin = function (moves) {
@@ -342,7 +342,7 @@ const gamePlay = (function(){
             xMoves = []
             oMoves = []
             if (document.getElementById('winner')) {
-                board.removeChild(document.getElementById('winner'))
+                headerInfo.removeChild(document.getElementById('winner'))
             }
             placeMark()
             if (document.getElementById('o-mark') && playerO.name === 'Computer') {
