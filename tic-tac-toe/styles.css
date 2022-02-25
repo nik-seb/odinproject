@@ -1,5 +1,5 @@
 body {
-    background-color: #a0a0a0;
+    background-color: #323232;
     font-family: sans-serif;
     margin: 0px;
 }
@@ -7,6 +7,11 @@ body {
 table {
     border-spacing: 0px;
     background: #323232;
+    color: #d6d6d6;
+    border: 5px solid black;
+}
+
+#header-info {
     color: #d6d6d6;
 }
 
@@ -64,7 +69,7 @@ td:last-of-type {
     width: 20%;
     background: #fff;
     padding: 0.5rem;
-    height: 218px;
+    height: 227px;
     box-sizing: border-box;
     font-size: small;
 }
@@ -72,6 +77,25 @@ td:last-of-type {
 #content-container {
     display: flex;
     justify-content: center;
+}
+
+#winner {
+    text-align: center;
+    color: #9d471d;
+    margin-bottom: 0.5rem;
+    animation: pulse 1.5s linear;
+}
+
+@keyframes pulse {
+    0% {
+        font-size: 30%;
+    }
+    50% {
+        font-size: 150%;
+    }
+    100% {
+        font-size: 100%;
+    }
 }
 
 input {
