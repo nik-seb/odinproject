@@ -1,7 +1,36 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: #323232;
     font-family: sans-serif;
     margin: 0px;
+    display: grid;
+    grid-template-columns: 1fr 250px 1fr;
+    grid-template-areas:
+        "header header header"
+        "player board score"
+    ;
+}
+
+@media (max-width: 800px) {
+    body {
+        grid-template-columns: 250px 1fr;
+        grid-template-areas: 
+            "header header"
+            "board score"
+            "player ."
+        ;
+    }
+    #player-info {
+        text-align: center;
+        margin: auto;
+    }
+    #player-info form {
+        position: fixed;
+        text-align: center;
+    }
 }
 
 table {
@@ -9,10 +38,13 @@ table {
     background: #323232;
     color: #d6d6d6;
     border: 5px solid black;
+    margin: auto;
 }
 
 #header-info {
+    grid-area: header;
     color: #d6d6d6;
+    height: 8rem;
 }
 
 h1, h2 {
@@ -57,24 +89,31 @@ td:last-of-type {
 }
 
 #board {
+    grid-area: board;
     text-align: center;
 }
 
 #player-info {
-    text-align: right;
+    grid-area: player;
     font-size: 14px;
+    justify-self: end;
 }
 
 #player-info, #placeholder-right {
-    width: 20%;
     background: transparent;
     padding: 0.5rem;
     height: 227px;
-    box-sizing: border-box;
     font-size: small;
 }
 
+#player-info form {
+    position: relative;
+    right: 0px;
+    text-align: right;
+}
+
 #scoreboard {
+    grid-area: score;
     background: black;
     border: 2px solid gray;
     margin-left: 1rem;
@@ -82,11 +121,6 @@ td:last-of-type {
     font-family: Monospace;
     font-size: 110%;
     padding: 0.5rem;
-}
-
-#content-container {
-    display: flex;
-    justify-content: center;
 }
 
 #winner {
@@ -110,13 +144,12 @@ td:last-of-type {
 
 input {
     margin-top: 5px;
-    width: 7em;
+    width: 100%;
 }
 
 button {
     border: none;
     padding: 0.5rem;
-    box-sizing: border-box;
     background-color: #9d471d;
     color: white;
 }
